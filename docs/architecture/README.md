@@ -100,7 +100,7 @@ architecture-beta
 ## 2.1 Med Brain - Medically oriented support
 
 - **Purpose:** Uses a Medically oriented LLM to send advice to the other modules.
-- **Repo location:** [`../medBrain`](../medBrain)
+- **Repo location:** [`../../medBrain`](../../medBrain)
 - **Notes:** At the current state of the project this module does not have auth, and is not protected against unwanted LLM calls
 
 ### 2.1.1 Sub-Components
@@ -141,7 +141,7 @@ flowchart TD
 ## 2.2 Eavesdropper - listens to the sympthoms
 
 - **Purpose:** Transcribes the conversation and forms optimised questions to Med Brain
-- **Repo location:** [`../eavesdropper`](../eavesdropper)
+- **Repo location:** [`../../eavesdropper`](../../eavesdropper)
 - **Notes:** This module lives close to the user (at least part of it) and tries to pick up as much information as possible form the conversation. For best results Whisper subcomponnent should hava an input microphone close to the user.
 
 ### 2.2.1 Sub-Components
@@ -220,7 +220,7 @@ flowchart TD
 ## 2.3 Report Generator - Generates the Report
 
 - **Purpose:** Generates Report and prompts Med Brain for report sections
-- **Repo location:** [`../reportGenerator`](../reportGenerator)
+- **Repo location:** [`../../reportGenerator`](../../reportGenerator)
 - **Notes:** Remember that flow is Requester > genrator (prev) > preview mode > generator (prod) > forward to the system
 
 ### 2.3.1 Sub-Components
@@ -294,7 +294,7 @@ flowchart TD
 ## 2.5 Web Platform - User access points and more
 
 - **Purpose:** Handles UI and Backend the system. bulk of UI and UX
-- **Repo location:** [`../webPlatform`](../webPlatform)
+- **Repo location:** [`../../webPlatform`](../../webPlatform)
 - **Notes:** Access point to the system handles the database connections and bulk of what user sees
 
 ### 2.5.1 Sub-Components
