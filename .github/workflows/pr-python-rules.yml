@@ -1,0 +1,126 @@
+name: Python Lint
+
+on:
+  pull_request:
+    paths:
+      - "**.py"
+
+concurrency:
+  group: python-lint-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  python-lint:
+    name: Python Golden Rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install linters
+        run: pip install flake8 flake8-naming pep8-naming --quiet
+
+      - name: Naming conventions & style (flake8)
+        run: |
+          # plugin enforces snake_case functions/vars, PascalCase classes, UPPER_CASE constants
+          flake8 . \
+            --select=E,W,F,N \
+            --max-line-length=100 \
+            --count \
+            --show-source \
+            --statistics
+
+      - name: Function size (max 50 lines) and nesting (max 3 levels)
+        run: |
+          python3 << 'EOF'
+          import ast, sys
+          from pathlib import Path
+
+          MAX_LINES = 50
+          MAX_NESTING = 3
+          failed = False
+
+          def max_nesting_depth(node, current=0):
+              NESTING_NODES = (ast.If, ast.For, ast.While, ast.With, ast.Try, ast.ExceptHandler)
+              depths = [current]
+              for child in ast.iter_child_nodes(node):
+                  if isinstance(child, NESTING_NODES):
+                      depths.append(max_nesting_depth(child, current + 1))
+              return max(depths)
+
+          for filepath in Path(".").rglob("*.py"):
+              if any(part.startswith(".") or part == "venv" for part in filepath.parts):
+                  continue
+              try:
+                  source = filepath.read_text()
+                  tree = ast.parse(source)
+              except SyntaxError:
+                  continue
+
+              for node in ast.walk(tree):
+                  if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                      continue
+
+                  # Check function length
+                  length = node.end_lineno - node.lineno + 1
+                  if length > MAX_LINES:
+                      print(f"{filepath}:{node.lineno} — '{node.name}' is {length} lines (max {MAX_LINES})")
+                      failed = True
+
+                  # Check nesting depth
+                  depth = max_nesting_depth(node)
+                  if depth > MAX_NESTING:
+                      print(f"{filepath}:{node.lineno} — '{node.name}' has {depth} nesting levels (max {MAX_NESTING})")
+                      failed = True
+
+          if not failed:
+              print("All functions within size and nesting limits")
+          sys.exit(1 if failed else 0)
+          EOF
+
+      - name: Bool variable naming
+        run: |
+          python3 << 'EOF'
+          import ast, sys
+          from pathlib import Path
+
+          BOOL_PREFIXES = ("is_", "has_", "can_", "should_")
+          SINGLE_LETTER = set("abcdefghijklmnopqrstuvwxyz")
+          ALLOWED_SINGLE = set("ijk")  # loop counters we can allow something like i for items in simple loops I am guessing that all other letters are just wrong coulb be changed in the future
+          failed = False
+
+          for filepath in Path(".").rglob("*.py"):
+              if any(part.startswith(".") or part == "venv" for part in filepath.parts):
+                  continue
+              try:
+                  tree = ast.parse(filepath.read_text())
+              except SyntaxError:
+                  continue
+
+              for node in ast.walk(tree):
+                  if not isinstance(node, ast.Assign):
+                      continue
+                  for target in node.targets:
+                      if not isinstance(target, ast.Name):
+                          continue
+                      name = target.id
+
+                      # Boolean naming
+                      if isinstance(node.value, ast.Constant) and isinstance(node.value.value, bool):
+                          if not any(name.startswith(p) for p in BOOL_PREFIXES):
+                              print(f"{filepath}:{target.col_offset} — boolean '{name}' must start with is_/has_/can_/should_")
+                              failed = True
+
+                      # Single-letter variable names
+                      if len(name) == 1 and name.lower() in SINGLE_LETTER and name.lower() not in ALLOWED_SINGLE:
+                          print(f"{filepath}:{target.col_offset} — single-letter variable '{name}' not allowed")
+                          failed = True
+
+          if not failed:
+              print("Bool and variable naming conventions passed")
+          sys.exit(1 if failed else 0)
+          EOF
