@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "@typescript-eslint/naming-convention": [
+      "error",
+      // Functions: camelCase (includes hooks via standard "use" prefix)
+      { "selector": "function", "format": ["camelCase", "PascalCase"] },
+      // Variables: camelCase
+      { "selector": "variable", "format": ["camelCase"] },
+      // Constants: UPPER_CASE for exported consts
+      { "selector": "variable", "modifiers": ["const", "exported"], "format": ["UPPER_CASE", "camelCase", "PascalCase"] },
+      // Types & interfaces: PascalCase
+      { "selector": "typeLike", "format": ["PascalCase"] },
+      // Enum members: UPPER_CASE
+      { "selector": "enumMember", "format": ["UPPER_CASE"] }
+    ]
+  }
+}
