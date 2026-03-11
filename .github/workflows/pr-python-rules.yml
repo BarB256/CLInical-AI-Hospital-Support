@@ -22,7 +22,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install linters
-        run: pip install flake8 flake8-naming pep8-naming --quiet
+        run: pip install flake8 pep8-naming --quiet
 
       - name: Naming conventions & style (flake8)
         run: |
