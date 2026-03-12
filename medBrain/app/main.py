@@ -1,12 +1,15 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI
-from app.routes import router
+from fastapi import FastAPI  
+from app.routes import router  
 
 app = FastAPI(
     title="Med Brain - LLM Gate",
-    description="Receives questions from the Trad LLM and returns validated Notes or Suggestions from a medical LLM.",
+    description=(
+        "Receives questions from the Trad LLM and returns "
+        "validated Notes or Suggestions from a medical LLM."
+    ),
     version="0.1.0",
 )
 
