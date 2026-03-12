@@ -101,7 +101,7 @@ architecture-beta
 
 - **Purpose:** Uses a Medically oriented LLM to send advice to the other modules.
 - **Repo location:** [`../../medBrain`](../../medBrain)
-- **Notes:** At the current state of the project this module does not have auth, and is not protected against unwanted LLM calls
+- **Notes:** At the current stage of the project this module does not have system-wide auth and is not fully protected against unwanted LLM calls. Auth is implemented at the LLM Gate level only.
 
 ### 2.1.1 Sub-Components
 
