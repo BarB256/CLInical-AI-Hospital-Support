@@ -11,5 +11,8 @@ class ValidationResult:
     error_type: str | None = None
     msg: str | None = None
 
-    def to_error_dict(self) -> dict: 
-        return {"type": self.error_type, "msg": self.msg}
+    def to_error_dict(self) -> dict:
+        return {
+            "type": self.error_type,
+            "msg": self.msg,
+        }
