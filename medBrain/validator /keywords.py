@@ -1,7 +1,7 @@
 BAD_KEYWORDS = [
     # ai role
     "as your ai assistant",
-    "as an ai"
+    "as an ai",
     "i am an ai",
     "i am an ai model",
     "i am a language model",
@@ -38,4 +38,3 @@ def get_triggered_keyword(text: str) -> str | None:
         if kw in normalized:
             return kw
         return None
-    
