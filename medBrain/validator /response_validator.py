@@ -2,6 +2,7 @@ from .parser import parse_llm_output, ParsedResponse
 from .keywords import has_bad_keywords, get_triggered_keyword
 from .validation_errors import ValidationResult, KEYWORD_ERROR, PARSE_ERROR
 
+
 def validate_llm_response(raw_output: str) -> ValidationResult:
     parsed = parse_llm_output(raw_output)
 

@@ -1,5 +1,5 @@
 BAD_KEYWORDS = [
-    #ai role
+    # ai role
     "as your ai assistant",
     "as an ai"
     "i am an ai",
@@ -9,12 +9,12 @@ BAD_KEYWORDS = [
     "i am not a doctor",
     "i cannot provide medical advice",
     "i cannot diagnose",
-    #filler words
+    # filler words
     "i think",
     "in my opinion",
     "i believe",
     "i would suggest",
-    #prompt
+    # prompt
     "ignore previous instructions",
     "disregard your instructions",
     "forget your instructions",
@@ -26,13 +26,16 @@ BAD_KEYWORDS = [
     "system prompt:",
 ]
 
+
 def has_bad_keywords(text: str) -> bool:
     normalized = text.lower()
     return any(kw in normalized for kw in BAD_KEYWORDS)
 
-def get_triggered_keyword(tex: str) -> str | None: 
+
+def get_triggered_keyword(text: str) -> str | None:
     normalized = text.lower()
     for kw in BAD_KEYWORDS:
         if kw in normalized:
             return kw
         return None
+    
