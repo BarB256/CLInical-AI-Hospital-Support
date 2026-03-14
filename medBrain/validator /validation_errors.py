@@ -1,4 +1,4 @@
-from dataclass import dataclass
+from dataclasses import dataclass
 
 VALIDATION_ERROR = "validation-error"
 KEYWORD_ERROR = "keyword-error"
