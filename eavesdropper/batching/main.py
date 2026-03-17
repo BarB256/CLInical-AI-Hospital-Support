@@ -59,6 +59,7 @@ def get_units(text):
     else:
         raise ValueError(f"Unsupported BATCH_TYPE: {BATCH_TYPE}")
 
+
 # ---------- API ----------
 def compute_batch(units, state):
     start = state["last_index"]
@@ -76,6 +77,7 @@ def format_batch(batch_units):
     if BATCH_TYPE == "characters":
         return "".join(batch_units)
     return " ".join(batch_units)
+
 
 # ---------- ENDPOINT ----------
 @app.get("/next-batch")
