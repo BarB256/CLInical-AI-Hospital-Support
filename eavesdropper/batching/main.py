@@ -59,6 +59,23 @@ def get_units(text):
     else:
         raise ValueError(f"Unsupported BATCH_TYPE: {BATCH_TYPE}")
 
+# ---------- API ----------
+def compute_batch(units, state):
+    start = state["last_index"]
+    end = start + BATCH_SIZE
+    return units[start:end], start, end
+
+
+def update_state_if_needed(batch, state, end):
+    if batch:
+        state["last_index"] = end
+        save_state(state)
+
+
+def format_batch(batch_units):
+    if BATCH_TYPE == "characters":
+        return "".join(batch_units)
+    return " ".join(batch_units)
 
 # ---------- ENDPOINT ----------
 @app.get("/next-batch")
@@ -67,18 +84,7 @@ def get_next_batch():
     text = read_transcript()
     units = get_units(text)
 
-    start = state["last_index"]
-    end = start + BATCH_SIZE
+    batch_units, start, end = compute_batch(units, state)
+    update_state_if_needed(batch_units, state, end)
 
-    batch_units = units[start:end]
-
-    if batch_units:
-        state["last_index"] = end
-        save_state(state)
-
-    if BATCH_TYPE == "characters":
-        batch_text = "".join(batch_units)
-    else:
-        batch_text = " ".join(batch_units)
-
-    return batch_text
+    return format_batch(batch_units)
