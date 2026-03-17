@@ -54,6 +54,7 @@ SPLITTERS = {
     "sentences": split_sentences,
 }
 
+
 def get_units(text):
     try:
         return SPLITTERS[BATCH_TYPE](text)
