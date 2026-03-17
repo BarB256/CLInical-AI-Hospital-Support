@@ -47,16 +47,17 @@ def split_sentences(text):
     return [s for s in sentences if s]
 
 
+SPLITTERS = {
+    "lines": split_lines,
+    "words": split_words,
+    "characters": split_characters,
+    "sentences": split_sentences,
+}
+
 def get_units(text):
-    if BATCH_TYPE == "lines":
-        return split_lines(text)
-    elif BATCH_TYPE == "words":
-        return split_words(text)
-    elif BATCH_TYPE == "characters":
-        return split_characters(text)
-    elif BATCH_TYPE == "sentences":
-        return split_sentences(text)
-    else:
+    try:
+        return SPLITTERS[BATCH_TYPE](text)
+    except KeyError:
         raise ValueError(f"Unsupported BATCH_TYPE: {BATCH_TYPE}")
 
 
