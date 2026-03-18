@@ -30,3 +30,4 @@ def append_to_transcript(text: str, output_path: Path = DEFAULT_OUTPUT) -> None:
         transcript_file.write(line)
 
     print(line, end="")
+    
