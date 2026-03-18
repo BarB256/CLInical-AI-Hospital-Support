@@ -35,6 +35,7 @@ def _handle_shutdown(sig, frame):
     print("\n[transcribe] Stopping...")
     is_running = False
 
+
 # when Ctrl+C(SIGINT) is pressed, call _handle_shutdown instead of crashing
 signal.signal(signal.SIGINT, _handle_shutdown)
 
@@ -67,7 +68,8 @@ def should_transcribe(
     """Return True if conditions are right to send buffer to Whisper."""
     return has_audio and (is_pause_detected or is_buffer_full)
 
-# main loop runs forever untill stopped
+
+# main loop runs forever until stopped
 def run_transcription_loop(model, output_path: Path) -> None:
     """Main loop: capture audio, buffer it, transcribe on pause."""
     # create the shared queue that audio.py will push chunks into
@@ -80,7 +82,7 @@ def run_transcription_loop(model, output_path: Path) -> None:
 
     buffer = []  # list that collects audio chunks until ready to send to whisper
     buffer_duration = 0.0  # tracks how many seconds of audio are currently in the buffer
-    last_speech_time = time.monotonic()  # timestamp of last detected speech 
+    last_speech_time = time.monotonic()  # timestamp of last detected speech
 
     try:
         while is_running:
@@ -88,7 +90,8 @@ def run_transcription_loop(model, output_path: Path) -> None:
             last_speech_time = _drain_queue(
                 audio_queue, buffer, last_speech_time
             )
-            # calculate total seconds of audio currently in the buffer, len(chunk) is the number of samples
+            # calculate total seconds of audio currently in the buffer
+            # len(chunk) is the number of samples, divided by SAMPLE_RATE gives seconds
             buffer_duration = sum(
                 len(chunk) / audio_mod.SAMPLE_RATE for chunk in buffer
             )
@@ -115,7 +118,8 @@ def run_transcription_loop(model, output_path: Path) -> None:
             transcribe_buffer(buffer, model, output_path)
 
 
-def _drain_queue(  # helper function
+# helper function - picks up all available audio chunks from the queue
+def _drain_queue(
     audio_queue: queue.Queue,
     buffer: list,
     last_speech_time: float,
@@ -153,12 +157,14 @@ def main() -> None:
 
     print(f"[transcribe] Loading Whisper '{args.model}' model...")
     # load whisper model into memory, downloads automatically on first run
-    model = whisper.load_model(args.model) 
+    model = whisper.load_model(args.model)
     print("[transcribe] Model ready.\n")
 
     run_transcription_loop(model, args.output)
     print("[transcribe] Done.")
 
+
 # only execute main() when this file is run directly
-if __name__ == "__main__": 
+# if another file imports this module, main() will not be triggered automatically
+if __name__ == "__main__":
     main()
