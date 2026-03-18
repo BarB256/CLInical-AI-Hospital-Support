@@ -122,6 +122,10 @@ flowchart TD
     F -- Yes --> G[Return validated response to user]
     F -- No --> H[Return error to the system]
 ```    
+- **validator_error_handling.py**: This file recieves the prompt, parses and validates it. If its correct it returns it to the user, otherwise the system ask the llm to fix its error. The proccess is repeated three times, if it still failes its terminated. Every attempt is saved into validation_logs.json
+- **validation_logs.py**: Handles logs saving
+- **validation_logs.json**: Stores logs, Log format:[timestamp, attempt, prompt, parsed_prompt, validation_result, error_msg]g
+
 
 #### 2.1.1.2 LLM Gate
 
