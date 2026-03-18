@@ -19,7 +19,7 @@ def handle_validated_message(prompt, max_tries=3):
 
         current_prompt = f"Fix this error: {validation_result.msg}. Original task: {prompt}"
 
-    print("Maximum validation attempts reached. Validation failed.")
+    return("Maximum validation attempts reached. Validation failed.")
 '''    
 
 
