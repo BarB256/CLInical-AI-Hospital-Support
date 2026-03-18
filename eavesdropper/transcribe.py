@@ -99,8 +99,7 @@ def run_transcription_loop(model, output_path: Path) -> None:
             # how many seconds have passed since the last detected speech
             silence_duration = time.monotonic() - last_speech_time
             is_pause_detected = (
-                silence_duration > PAUSE_THRESHOLD and 
-                buffer_duration >= MIN_SPEECH_DURATION
+                silence_duration > PAUSE_THRESHOLD and buffer_duration >= MIN_SPEECH_DURATION
             )
             is_buffer_full = buffer_duration >= MAX_BUFFER_DURATION
 
@@ -168,4 +167,3 @@ def main() -> None:
 # if another file imports this module, main() will not be triggered automatically
 if __name__ == "__main__":
     main()
-    
