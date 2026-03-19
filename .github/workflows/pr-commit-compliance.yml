@@ -1,0 +1,150 @@
+name: PR and Commit Compliance 
+
+on:
+    pull_request:
+        types: [opened, edited, synchronize, reopened, ready_for_review]
+
+concurrency:
+    group: pr-commit-compliance-${{ github.event.pull_request.number }}
+    cancel-in-progress: true
+
+
+jobs:
+    compliance:
+        name: PR and Commit Compliance Rules
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+            
+            - name: Validate branch name
+              env: 
+                BRANCH_NAME: ${{ github.head_ref }}
+              run: |
+                python3 << 'PY'
+                import os, re, sys
+
+                branch = os.environ.get("BRANCH_NAME", "").strip()
+
+                ALLOWED_PATTERN = r"^(feature|fix|chore)/SCRUM-\d+/[a-z0-9]+(?:-[a-z0-9]+)*$"
+                # (feature|fix|chore) = must begin with one of these, \d+ = any number, [a-z0-9] = one or more lowercase letters or numbers
+                # example: feature/SCRUM-9/some-new-feature
+
+                if not re.fullmatch(ALLOWED_PATTERN, branch):
+                    print(f"Invalid branch name: '{branch}'")
+                    print("Expected format examples:")
+                    print("  feature/SCRUM-9/some-new-feature")
+                    print("  fix/SCRUM-10/something-fixed")
+                    sys.exit(1)
+                
+                print(f"Branch name is valid: {branch}")
+                PY
+            
+
+            - name: Validate PR title
+              env: 
+                PR_TITLE: ${{ github.event.pull_request.title }}
+              run: |
+                python3 << 'PY'
+                import os, re, sys
+
+                title = os.environ.get("PR_TITLE", "").strip()
+
+                ALLOWED_PATTERN = r"^\(SCRUM-\d+\)(feat|fix|chore): .+$" 
+                # example: (SCRUM-12)feat: implemented this thing
+
+                if not re.fullmatch(ALLOWED_PATTERN, title):
+                    print(f"Invalid PR title: '{title}'")
+                    print("Expected format example:")
+                    print("  (SCRUM-9)feat: syncing logic between the transcript and the LLM")
+                    sys.exit(1)
+
+                print(f"PR title is valid: {title}")
+                PY
+            
+
+            - name: Validate PR description
+              env: 
+                PR_BODY: ${{ github.event.pull_request.body }}
+              run: |
+                python3 << 'PY'
+                import os, sys
+
+                body = os.environ.get("PR_BODY") or ""
+
+                REQUIRED_SECTIONS = [
+                    "## What was changed",
+                    "## Why it was changed",
+                    "## Side effects / breaking changes",
+                ]
+                
+                # check all required sections exist
+                for section in REQUIRED_SECTIONS:
+                    if section not in body:
+                        print(f"Missing required section: {section}")
+                        sys.exit(1)
+                
+                # check each section has actual content
+                for section in REQUIRED_SECTIONS:
+                    after = body.split(section, 1)[1].strip()
+
+                    # Find where next section starts
+                    next_index = after.find("\n## ")
+                    if next_index != -1:
+                        content = after[:next_index].strip()
+                    else:
+                        content = after.strip()
+
+                    if not content:
+                        print(f"Section is empty: {section}")
+                        sys.exit(1)
+
+                print("PR description is valid")
+                PY
+            
+            
+            - name: Validate commit messages in PR
+              env: 
+                BASE_REF: ${{ github.event.pull_request.base.ref }} # target branch of PR (main)
+                HEAD_SHA: ${{ github.event.pull_request.head.sha }} # top commit hash of last commit in the PR branch
+              run: |
+                git fetch origin "${BASE_REF}" --depth=1    # latest state of (main) branch
+
+                python3 << 'PY'
+                import os, re, subprocess, sys
+
+                base_ref = os.environ["BASE_REF"]
+                head_sha = os.environ["HEAD_SHA"]
+
+                # gets only the commit messages from the PR branch
+                result = subprocess.run(
+                    ["git", "log", "--format=%s", f"origin/{base_ref}..{head_sha}"],
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+
+                commits = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+                if not commits:
+                    print("No commits found in PR")
+                    sys.exit(1)
+
+                ALLOWED_PATTERN = r"^\(SCRUM-\d+\)(feat|fix|chore): .+$"
+                
+                # check each commit message to see if any is invalid
+                invalid = [msg for msg in commits if not re.fullmatch(ALLOWED_PATTERN, msg)]
+
+                if invalid:
+                    print("Invalid commit message(s) found:")
+                    for msg in invalid:
+                        print(f"  - {msg}")
+                    print("Expected example:")
+                    print("  (SCRUM-9)feat: syncing logic between the transcript and the LLM")
+                    sys.exit(1)
+
+                print("All commit messages are valid")
+                PY
