@@ -2,8 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from app.auth import verify_api_key
 from app.llm_gate import ask_medical_llm
+from validator.response_validator import validate_llm_response
+from validator.validation_logger import log_validation_attempt
 
 router = APIRouter()
+
+MAX_VALIDATION_RETRIES = 3
 
 
 class AskRequest(BaseModel):
@@ -34,12 +38,40 @@ async def ask(
     body: AskRequest,
     _: str = Depends(verify_api_key),
 ) -> AskResponse:
-    try:
-        result = await ask_medical_llm(body.question)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Ollama unreachable or returned an unexpected error: {exc}",
+    for attempt in range(MAX_VALIDATION_RETRIES):
+        try:
+            result = await ask_medical_llm(body.question)
+        except Exception as error:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=(
+                    "Ollama unreachable or returned an unexpected "
+                    f"error: {error}"
+                ),
+            )
+
+        # Validate the response
+        validation = validate_llm_response(result)
+
+        # Log the validation attempt
+        log_validation_attempt(
+            attempt=attempt + 1,
+            prompt=body.question,
+            validation=validation,
         )
 
-    return AskResponse(response=result)
+        if validation.is_valid:
+            return AskResponse(response=result)
+
+        # If this is the last attempt, return the validation error
+        if attempt == MAX_VALIDATION_RETRIES - 1:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=validation.to_error_dict(),
+            )
+
+    # Fallback
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Validation retries exhausted",
+    )
