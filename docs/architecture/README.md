@@ -122,9 +122,6 @@ flowchart TD
     F -- Yes --> G[Return validated response to user]
     F -- No --> H[Return error to the system]
 ```    
-- **validator_error_handling.py**: This file recieves the prompt, parses and validates it. If its correct it returns it to the user, otherwise the system ask the llm to fix its error. The proccess is repeated three times, if it still failes its terminated. Every attempt is saved into validation_logs.json
-- **validation_logs.py**: Handles logs saving
-- **validation_logs.json**: Stores logs, Log format:[timestamp, attempt, prompt, parsed_prompt, validation_result, error_msg]g
 
 
 ##### Module Structure
@@ -132,7 +129,9 @@ flowchart TD
 * `keywords.py` —  Bad keyword list to block prompt injections and AI identity reveals
 * `parser.py` — Parses raw LLM XML output into a structured object
 * `response_validator.py` — Orchestrates the full validation chain
+* `validation_logger.py` - Handles saving logs into `validator_logs.json`
 
+The error handling of the module happens in `routes.py` where the validation proccess has three attempts.
 #### 2.1.1.2 LLM Gate
 
 In between the Ollama endpoint and the rest of the system. Validates request from the other parts of the system.
