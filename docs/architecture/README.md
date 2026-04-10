@@ -123,12 +123,6 @@ flowchart TD
     F -- No --> H[Return error to the system]
 ```    
 
-##### Module Structure
-* `validation_errors.py` — Holds the ValidationResult model and error type constants
-* `keywords.py` —  Bad keyword list to block prompt injections and AI identity reveals
-* `parser.py` — Parses raw LLM XML output into a structured object
-* `response_validator.py` — Orchestrates the full validation chain
-
 #### 2.1.1.2 LLM Gate
 
 In between the Ollama endpoint and the rest of the system. Validates request from the other parts of the system.
