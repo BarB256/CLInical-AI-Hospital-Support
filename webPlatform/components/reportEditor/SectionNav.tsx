@@ -27,7 +27,6 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
   return (
     <div className="flex h-full flex-col gap-4">
 
-      {/* report meta card */}
       <div className="rounded-3xl bg-[#2CA6AE] p-6 text-white">
         <p className="text-xs font-bold tracking-widest opacity-70 mb-3">CLINICAL REPORT</p>
 
@@ -47,10 +46,8 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
         </div>
       </div>
 
-      {/* section list */}
       <div className="flex-1 rounded-3xl bg-white p-4 overflow-y-auto flex flex-col gap-3 min-h-0">
 
-        {/* title-based filter — content search is server-side */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
           <input
@@ -105,7 +102,6 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
         </div>
       </div>
 
-      {/* progress + submit */}
       <div className="rounded-3xl bg-white p-5 shrink-0">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-gray-500">Sections reviewed</span>

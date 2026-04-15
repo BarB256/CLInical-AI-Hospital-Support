@@ -7,40 +7,29 @@ import SectionEditor from "./SectionEditor";
 import type { ReportMeta, ReportSectionSummary } from "./mockTypes";
 
 export default function ReportLayout() {
-  // ── server state ──────────────────────────────────────────────────────────
-  // In production these three pieces come from separate endpoints:
-
   // GET /api/reports/:id
   const [meta, setMeta] = useState<ReportMeta | null>(null);
-
-  // GET /api/reports/:id/sections  — lightweight list, no content
+  // GET /api/reports/:id/sections — list only, no content
   const [sectionList, setSectionList] = useState<ReportSectionSummary[]>([]);
-
-  // GET /api/reports/:id/sections/:sectionId  — fetched per section, on demand
+  // GET /api/reports/:id/sections/:sectionId — fetched per section on demand
   const [contentCache, setContentCache] = useState<Record<string, string>>({});
 
-  // ── ui state ──────────────────────────────────────────────────────────────
   const [activeSectionId, setActiveSectionId] = useState<string>("");
   const [editingSectionId, setEditingSectionId] = useState<string>("");
   const [loadingContentId, setLoadingContentId] = useState<string | null>(null);
 
-  // Simulate initial page load: fetch report meta + section list
   useEffect(() => {
-    // In production:
-    //   const meta = await fetch(`/api/reports/${reportId}`).then(r => r.json());
-    //   const list = await fetch(`/api/reports/${reportId}/sections`).then(r => r.json());
     setMeta(mockReportMeta);
     setSectionList(mockSectionList);
 
-    // Pre-load the first section so there's no flicker on arrival
+    // Pre-load the first section to avoid a blank flash on arrival
     const firstId = mockSectionList[0].id;
     setActiveSectionId(firstId);
     setContentCache({ [firstId]: mockSectionContent[firstId] });
   }, []);
 
-  // Simulate: GET /api/reports/:id/sections/:sectionId
   function fetchSectionContent(id: string) {
-    if (contentCache[id]) return; // already cached — skip
+    if (contentCache[id]) return;
     setLoadingContentId(id);
     // In production: fetch(`/api/reports/${reportId}/sections/${id}`)
     setTimeout(() => {
@@ -56,7 +45,7 @@ export default function ReportLayout() {
   }
 
   function handleAccept(id: string, content: string) {
-    // In production: PATCH /api/reports/:id/sections/:sectionId  { content, status: "accepted" }
+    // In production: PATCH /api/reports/:id/sections/:sectionId
     setSectionList((prev) =>
       prev.map((s) => (s.id === id ? { ...s, status: "accepted" } : s))
     );
@@ -73,7 +62,6 @@ export default function ReportLayout() {
 
   const activeSection = sectionList.find((s) => s.id === activeSectionId);
   const isLoadingContent = loadingContentId === activeSectionId;
-  // null = not yet fetched (shows skeleton), string = ready
   const activeContent = isLoadingContent ? null : (contentCache[activeSectionId] ?? null);
 
   return (

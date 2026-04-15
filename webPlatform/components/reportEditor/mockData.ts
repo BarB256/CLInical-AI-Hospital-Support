@@ -10,7 +10,6 @@ export const mockReportMeta: ReportMeta = {
 };
 
 // Mock: GET /api/reports/:id/sections
-// Lightweight list — titles and status only, no content.
 export const mockSectionList: ReportSectionSummary[] = [
   { id: "patient-overview",      title: "Patient Overview",      status: "pending" },
   { id: "presenting-complaint",  title: "Presenting Complaint",  status: "pending" },
@@ -22,7 +21,6 @@ export const mockSectionList: ReportSectionSummary[] = [
 ];
 
 // Mock: GET /api/reports/:id/sections/:sectionId
-// Fetched individually on demand — keyed by section ID.
 export const mockSectionContent: Record<string, string> = {
   "patient-overview": `Patient: John Eriksen
 Date of Birth: 14 March 1982 (44 years old)

@@ -10,17 +10,8 @@ type Props = {
   isEditing: boolean;
 };
 
-// ---------------------------------------------------------------------------
-// DocumentPreview — renders plain-text content styled like the generated PDF.
-// The DB stores raw text; the PDF generator applies the same visual rules.
-// Rules (applied line-by-line):
-//   - Empty line           → vertical gap
-//   - Starts with '1. '   → numbered heading (bold)
-//   - Ends with ':'        → sub-heading (bold)
-//   - Starts with '   - '  → indented bullet
-//   - Starts with '- '     → top-level bullet
-//   - Otherwise            → paragraph text
-// ---------------------------------------------------------------------------
+// Renders plain-text content styled to match the generated PDF output.
+// Parses line-by-line: indented bullets, top-level bullets, headings (ends with ':'), numbered items, plain text.
 function DocumentPreview({ content }: { content: string }) {
   const lines = content.split("\n");
 
@@ -63,13 +54,11 @@ function DocumentPreview({ content }: { content: string }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-
 export default function SectionEditor({ section, content, onAccept, onEdit, isEditing }: Props) {
   const [draft, setDraft] = useState(content ?? "");
 
   // Sync draft when content arrives after the async fetch.
-  // Skipped while the user is actively editing to avoid overwriting in-progress changes.
+  // Skipped while editing to avoid overwriting in-progress changes.
   useEffect(() => {
     if (content !== null && !isEditing) {
       setDraft(content);
@@ -90,7 +79,6 @@ export default function SectionEditor({ section, content, onAccept, onEdit, isEd
   return (
     <div className="flex h-full flex-col bg-white rounded-3xl overflow-hidden">
 
-      {/* header */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
@@ -138,10 +126,8 @@ export default function SectionEditor({ section, content, onAccept, onEdit, isEd
         </div>
       </div>
 
-      {/* content area */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
         {isLoading ? (
-          /* ── LOADING: content being fetched ── */
           <div className="space-y-3 animate-pulse">
             <div className="h-4 w-3/4 rounded bg-gray-100" />
             <div className="h-4 w-full rounded bg-gray-100" />
@@ -149,7 +135,6 @@ export default function SectionEditor({ section, content, onAccept, onEdit, isEd
             <div className="h-4 w-2/3 rounded bg-gray-100" />
           </div>
         ) : isEditing ? (
-          /* ── EDIT MODE: plain textarea ── */
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -158,7 +143,6 @@ export default function SectionEditor({ section, content, onAccept, onEdit, isEd
             autoFocus
           />
         ) : (
-          /* ── VIEW MODE: styled document preview (mirrors PDF output) ── */
           <div className="mx-auto max-w-2xl">
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm px-10 py-8">
               <div className="mb-6 pb-5 border-b-2 border-[#2CA6AE]">
