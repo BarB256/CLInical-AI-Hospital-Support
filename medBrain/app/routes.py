@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 from app.auth import verify_api_key
 from app.llm_gate import ask_medical_llm
 from validator.response_validator import validate_llm_response
-import logging
 from validator.validator_logs import log_validation_attempt
 
 router = APIRouter()
@@ -38,20 +37,18 @@ async def ask(
     _: str = Depends(verify_api_key),
 ) -> AskResponse:
     try:
-        
         attempt_number = 1
 
         while attempt_number < 4:
-
             result = await ask_medical_llm(body.question)
-        
+
             parsed_result = validate_llm_response(result)
 
             log_validation_attempt(attempt_number, parsed_result)
 
-            if parsed_result.is_valid == True:
+            if parsed_result.is_valid:
                 return parsed_result.msg
-            
+
             attempt_number += 1
 
         print("Failed to parse the llm after 3 attempts")
