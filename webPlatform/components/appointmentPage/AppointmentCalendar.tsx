@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
 
 // mock appointments data - will be replaced with real data from backend later
@@ -34,7 +34,23 @@ function formatDate(date: Date): string {
 
 export default function AppointmentCalendar() {
   // tracks which day is selected - defaults to today
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  const calendarModifiers = useMemo(() => ({ today }), [today]);
+  const calendarModifiersStyles = useMemo(
+    () => ({
+      today: {
+        fontWeight: "900",
+        color: "#2CA6AE",
+      },
+    }),
+    []
+  );
 
   // get appointments for the selected day
   const selectedKey = formatDate(selectedDate);
@@ -81,21 +97,22 @@ export default function AppointmentCalendar() {
       <div className="w-1.5 bg-[#2CA6AE] self-stretch mx-4 shrink-0 rounded-full" />
 
       {/* calendar widget */}
-      <div className="bg-[#2CA6AE] rounded-3xl p-4 flex-1 overflow-hidden h-full flex flex-col">
-        <div className="bg-white rounded-2xl p-4 w-full h-full flex overflow-hidden">
+      <div className="bg-[#2CA6AE] rounded-3xl p-4 flex-1 overflow-hidden flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-4 w-full h-full overflow-hidden [&_button[data-day]]:aspect-auto [&_button[data-day]]:w-16 [&_button[data-day]]:mx-auto [&_button[data-day]]:py-2.5">
           <Calendar
             mode="single"
             selected={selectedDate}
             onSelect={(date) => date && setSelectedDate(date)}
-            // Make everything flex/h-full to force rows to stretch vertically
-            className="w-full h-full flex [&>div]:w-full [&>div]:h-full [&_.rdp-months]:w-full [&_.rdp-months]:h-full [&_.rdp-month]:w-full [&_.rdp-month]:h-full [&_.rdp-month]:flex [&_.rdp-month]:flex-col [&_table]:w-full [&_table]:flex-1 [&_table]:flex [&_table]:flex-col [&_thead]:w-full [&_thead]:flex [&_tr]:w-full [&_tr]:flex [&_tr]:justify-between [&_tbody]:w-full [&_tbody]:flex-1 [&_tbody]:flex [&_tbody]:flex-col [&_tbody_tr]:flex-1 [&_th]:flex-1 [&_th]:flex [&_th]:justify-center [&_th]:items-center [&_td]:flex-1 [&_td]:p-0 [&_.rdp-day]:w-full [&_.rdp-day]:h-full [&_.rdp-day]:aspect-auto [&_.rdp-day]:text-lg [&_.rdp-day]:flex [&_.rdp-day]:items-center [&_.rdp-day]:justify-center"
-            modifiers={{ today: new Date() }}
-            modifiersStyles={{
-              today: {
-                fontWeight: "900",
-                color: "#2CA6AE",
-              },
+            classNames={{
+              root: "w-full",
+              month: "flex w-full flex-col gap-3",
+              month_caption: "flex h-8 w-full items-center justify-center px-(--cell-size)",
+              day: "group/day relative h-10 mt-4 w-full rounded-(--cell-radius) p-0 text-center select-none [&:last-child[data-selected=true]_button]:rounded-r-(--cell-radius) [&:first-child[data-selected=true]_button]:rounded-l-(--cell-radius)",
+              week: "flex w-full mt-0",
+              today: "font-semibold [&_button]:bg-[#E8F3F4] [&_button]:rounded-lg",
             }}
+            modifiers={calendarModifiers}
+            modifiersStyles={calendarModifiersStyles}
           />
         </div>
       </div>
