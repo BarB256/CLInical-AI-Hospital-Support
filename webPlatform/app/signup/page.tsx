@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SignUpForm from "@/components/signupPage/SignUpForm";
 
 export default function SignUpPage() {
@@ -7,7 +8,9 @@ export default function SignUpPage() {
       {/* already have an account */}
       <p className="text-[#2CA6AE] text-sm font-bold">
         Already have an account?{" "}
-        <span className="underline cursor-pointer font-extrabold">Log in</span>
+        <Link href="/login" className="underline cursor-pointer font-extrabold">
+            Log in
+          </Link>
       </p>
 
       <SignUpForm />
