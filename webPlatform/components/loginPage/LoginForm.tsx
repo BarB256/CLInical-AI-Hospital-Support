@@ -1,49 +1,59 @@
 "use client";
 
 import { Mail, Lock } from "lucide-react";
+import type { LoginFormData, LoginFormProps } from "@/types";
 
-export default function LoginForm() {
+export default function LoginForm({ onSubmit }: LoginFormProps) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const data: LoginFormData = {
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
+    };
+
+    onSubmit?.(data);
+  }
+
   return (
-    <div className="bg-white rounded-3xl shadow-lg w-full max-w-[400px] overflow-hidden">
-      {/* tealheader */}
-      <div className="bg-[#2CA6AE] py-6 px-8 rounded-b-3xl">
-        <h1 className="text-white font-bold text-2xl tracking-widest text-center">LOG IN</h1>
+    <form onSubmit={handleSubmit} className="w-full max-w-[400px] overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+      <div className="border-b border-gray-100 px-8 py-6">
+        <h1 className="text-center text-2xl font-semibold text-gray-950">Log in</h1>
       </div>
 
-      {/* form content */}
-      <div className="px-8 py-6 flex flex-col gap-5">
-        <p className="text-[#2CA6AE] font-semibold text-sm tracking-widest text-center">
-          WELCOME BACK!
-        </p>
+      <div className="flex flex-col gap-5 px-8 py-6">
+        <p className="text-center text-sm font-semibold text-[#167980]">Welcome back</p>
 
-        {/* email and password group */}
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 bg-[#2CA6AE] rounded-full px-4 py-2">
-            <Mail className="h-4 w-4 text-white shrink-0" />
+          <label className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 focus-within:border-[#167980] focus-within:ring-2 focus-within:ring-[#167980]/15">
+            <Mail className="h-4 w-4 shrink-0 text-gray-400" />
             <input
+              name="email"
               type="email"
-              placeholder="e-mail"
-              className="bg-transparent text-white placeholder-white/70 outline-none w-full text-sm"
+              placeholder="Email"
+              required
+              className="w-full bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
             />
-          </div>
+          </label>
 
-          <div className="flex items-center gap-3 bg-[#2CA6AE] rounded-full px-4 py-2">
-            <Lock className="h-4 w-4 text-white shrink-0" />
+          <label className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 focus-within:border-[#167980] focus-within:ring-2 focus-within:ring-[#167980]/15">
+            <Lock className="h-4 w-4 shrink-0 text-gray-400" />
             <input
+              name="password"
               type="password"
-              placeholder="password"
-              className="bg-transparent text-white placeholder-white/70 outline-none w-full text-sm"
+              placeholder="Password"
+              required
+              className="w-full bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
             />
-          </div>
+          </label>
         </div>
 
-        {/* login button */}
         <div className="flex justify-center">
-          <button className="bg-[#48D8E3] text-white font-semibold py-3 px-12 rounded-full hover:scale-105 transition-all">
+          <button className="w-full rounded-lg bg-[#167980] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#12666c]">
             Log in
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }

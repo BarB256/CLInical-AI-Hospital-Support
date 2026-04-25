@@ -1,26 +1,16 @@
-import { motion } from "motion/react";
 import { FileText } from "lucide-react";
 import type { NoteCardProps } from "@/types";
 
 export default function NoteCard({ content, timestamp, isNew }: NoteCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="relative p-4 bg-white border-l-4 border-[#4DB8AC] rounded-lg shadow-sm hover:shadow-md transition-shadow"
-    >
+    <article className="relative rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
       {isNew && (
-        <motion.div
-          initial={{ scale: 1 }}
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 0.6, repeat: 3 }}
-          className="absolute -top-1 -right-1 w-3 h-3 bg-[#4DB8AC] rounded-full"
-        />
+        <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-[#167980]" />
       )}
 
       <div className="flex items-start gap-3">
-        <div className="mt-1 p-2 bg-[#4DB8AC]/10 rounded-lg">
-          <FileText className="w-4 h-4 text-[#4DB8AC]" />
+        <div className="mt-1 rounded-lg bg-[#E6F7F7] p-2">
+          <FileText className="h-4 w-4 text-[#167980]" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -32,7 +22,7 @@ export default function NoteCard({ content, timestamp, isNew }: NoteCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </article>
   );
 }
 

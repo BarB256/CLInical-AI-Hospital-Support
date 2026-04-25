@@ -4,23 +4,25 @@ import { useState } from "react";
 import { CheckCircle, User, Calendar, Stethoscope, Search } from "lucide-react";
 import type { SectionNavProps as Props } from "@/types";
 
+const SECTION_DISPLAY_LIMIT = 80;
+
 export default function SectionNav({ meta, sections, activeSectionId, onSelectSection }: Props) {
   const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
 
   const acceptedCount = sections.filter((s) => s.status === "accepted").length;
   const totalCount = sections.length;
   const allAccepted = acceptedCount === totalCount;
 
-  // Filter by title only — the nav only holds summaries (no content).
-  // In production, content search would be: GET /api/reports/:id/sections?q=term
-  const filtered = query.trim()
-    ? sections.filter((s) => s.title.toLowerCase().includes(query.toLowerCase()))
+  const filtered = normalizedQuery
+    ? sections.filter((s) => s.title.toLowerCase().includes(normalizedQuery))
     : sections;
+  const visibleSections = filtered.slice(0, SECTION_DISPLAY_LIMIT);
 
   return (
     <div className="flex h-full flex-col gap-4">
 
-      <div className="rounded-3xl bg-[#2CA6AE] p-6 text-white">
+      <div className="rounded-xl bg-[#167980] p-5 text-white">
         <p className="text-xs font-bold tracking-widest opacity-70 mb-3">CLINICAL REPORT</p>
 
         <div className="flex items-center gap-2 mb-1">
@@ -39,7 +41,7 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
         </div>
       </div>
 
-      <div className="flex-1 rounded-3xl bg-white p-4 overflow-y-auto flex flex-col gap-3 min-h-0">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto rounded-xl border border-gray-100 bg-white p-4">
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
@@ -52,14 +54,14 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
           />
         </div>
 
-        <p className="text-xs font-bold tracking-widest text-[#2CA6AE] px-1">SECTIONS</p>
+        <p className="px-1 text-xs font-bold tracking-widest text-[#167980]">SECTIONS</p>
 
         <div className="flex flex-col gap-1">
           {filtered.length === 0 && (
             <p className="text-xs text-gray-400 px-2 py-4 text-center">No sections match.</p>
           )}
 
-          {filtered.map((section) => {
+          {visibleSections.map((section) => {
             const isActive = section.id === activeSectionId;
             const isAccepted = section.status === "accepted";
             const originalIndex = sections.findIndex((s) => s.id === section.id);
@@ -68,15 +70,15 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
               <button
                 key={section.id}
                 onClick={() => onSelectSection(section.id)}
-                className={`flex items-center gap-3 w-full rounded-2xl px-3 py-3 text-left transition-all ${
+                className={`flex items-center gap-3 w-full rounded-lg px-3 py-3 text-left transition ${
                   isActive
-                    ? "bg-[#2CA6AE] text-white"
+                    ? "bg-[#167980] text-white"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 <span className="shrink-0 w-5 flex items-center justify-center">
                   {isAccepted ? (
-                    <CheckCircle className={`h-4 w-4 ${isActive ? "text-white" : "text-[#2CA6AE]"}`} />
+                    <CheckCircle className={`h-4 w-4 ${isActive ? "text-white" : "text-[#167980]"}`} />
                   ) : (
                     <span className={`text-xs font-bold ${isActive ? "text-white/70" : "text-gray-400"}`}>
                       {originalIndex + 1}
@@ -95,15 +97,15 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
         </div>
       </div>
 
-      <div className="rounded-3xl bg-white p-5 shrink-0">
+      <div className="shrink-0 rounded-xl border border-gray-100 bg-white p-5">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-gray-500">Sections reviewed</span>
-          <span className="text-xs font-bold text-[#2CA6AE]">{acceptedCount}/{totalCount}</span>
+          <span className="text-xs font-bold text-[#167980]">{acceptedCount}/{totalCount}</span>
         </div>
 
         <div className="h-1.5 w-full rounded-full bg-gray-100 mb-4">
           <div
-            className="h-1.5 rounded-full bg-[#2CA6AE] transition-all duration-500"
+            className="h-1.5 rounded-full bg-[#167980] transition-all duration-500"
             style={{ width: `${(acceptedCount / totalCount) * 100}%` }}
           />
         </div>
@@ -112,7 +114,7 @@ export default function SectionNav({ meta, sections, activeSectionId, onSelectSe
           disabled={!allAccepted}
           className={`w-full rounded-xl py-3 text-sm font-semibold transition-all ${
             allAccepted
-              ? "bg-[#2CA6AE] text-white hover:bg-[#1d8a91]"
+              ? "bg-[#167980] text-white hover:bg-[#12666c]"
               : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >

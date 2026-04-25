@@ -1,45 +1,38 @@
 import { Pencil, MapPin } from "lucide-react";
+import Image from "next/image";
 
-// displays the logged in doctor's profile information
 export default function DoctorProfileWidget() {
   return (
-    <div className="rounded-3xl overflow-hidden bg-white flex flex-col h-full">
+    <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
 
-      {/* teal header bar */}
-      <div className="bg-[#2CA6AE] px-6 py-4 flex items-center justify-between rounded-b-3xl">
-        <span className="text-white font-bold text-sm tracking-widest">MY PROFILE</span>
-        <div className="bg-[#C1D7D9] p-2 rounded-xl cursor-pointer hover:scale-110 transition-transform">
-          <Pencil className="h-5 w-5 text-white" />
-        </div>
+      <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+        <span className="text-xs font-bold tracking-widest text-[#167980]">MY PROFILE</span>
+        <button className="rounded-lg border border-gray-200 p-2 text-gray-500 transition hover:border-[#167980] hover:text-[#167980]">
+          <Pencil className="h-4 w-4" />
+        </button>
       </div>
 
-      {/* profile content */}
-      <div className="flex items-center gap-6 p-6 flex-1">
-
-        {/* avatar */}
-        <img
+      <div className="flex flex-1 items-center gap-5 p-5">
+        <Image
           src="/avatar.svg"
           alt="doctor avatar"
-          className="h-20 w-20 rounded-full object-cover"
+          width={72}
+          height={72}
+          className="h-18 w-18 rounded-full object-cover"
         />
 
-        {/* doctor info */}
-        <div className="flex flex-col gap-1">
-          <h3 className="font-bold text-[#000000] text-lg">Dr. Julian Santos</h3>
-          <span className="text-[#2CA6AE] font-bold text-sm tracking-widest">PEDIATRICIAN</span>
-          <div className="flex items-center gap-1 text-[#000000] text-sm">
-            <MapPin className="h-4 w-4" />
+        <div className="min-w-0 flex-1">
+          <h3 className="font-semibold text-gray-950">Dr. Julian Santos</h3>
+          <span className="text-xs font-bold tracking-widest text-[#167980]">PEDIATRICIAN</span>
+          <div className="mt-2 flex items-center gap-1 text-sm text-gray-500">
+            <MapPin className="h-4 w-4 shrink-0" />
             <span>Kolding, Denmark</span>
           </div>
         </div>
 
-        {/* divider */}
-        <div className="w-1 bg-[#2CA6AE] self-stretch mx-8 rounded-full" />
-
-        {/* working hours */}
-        <div className="flex flex-col items-center gap-1 px-4">
-          <span className="text-[#000000] text-base">Working Hours</span>
-          <span className="text-[#000000] text-lg">10am - 5pm</span>
+        <div className="rounded-lg bg-[#F4F7F7] px-4 py-3 text-center">
+          <span className="block text-xs text-gray-500">Working hours</span>
+          <span className="text-sm font-semibold text-gray-900">10am - 5pm</span>
         </div>
 
       </div>

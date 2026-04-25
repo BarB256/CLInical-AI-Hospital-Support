@@ -1,20 +1,21 @@
-// welcome widget displaying a greeting for the logged in doctor
+import Image from "next/image";
+
 export default function HelloWidget() {
-  // mock doctor name - will be replaced with real data from backend later
   const doctorName = "Dr. Santos";
 
   return (
-    <div className="relative bg-[#2CA6AE] rounded-3xl p-10.5 ">
-      <h2 className="text-white text-2xl">
+    <div className="relative min-h-36 overflow-hidden rounded-xl bg-[#167980] p-6">
+      <h2 className="text-2xl text-white">
         Welcome, <span className="font-bold">{doctorName}</span>
       </h2>
-      <p className="text-white text-base mt-1">Have a nice day at work!</p>
+      <p className="mt-1 max-w-sm text-sm text-white/80">Your appointments and report reviews are ready.</p>
 
-      {/* doctor illustration - positioned absolutely to float on top */}
-      <img
+      <Image
         src="/doctor.svg"
         alt="doctor illustration"
-        className="absolute bottom-0 right-40 h-60"
+        width={180}
+        height={180}
+        className="absolute bottom-0 right-8 hidden h-40 w-40 md:block"
       />
     </div>
   );

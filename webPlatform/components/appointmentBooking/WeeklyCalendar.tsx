@@ -1,6 +1,9 @@
 import WeekDayColumn from "./WeekDayColumn";
 import { getWeekDays, formatDateKey } from "./dateUtils";
 import type { WeeklyCalendarProps as Props } from "@/types";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+
+const WEEK_DAY_LIMIT = 7;
 
 // subtracts 7 from current date, moving into the previous week
 function handlePreviousWeek(selectedDate: Date | undefined, onSelectDate: (date: Date | undefined) => void, onSelectTime: (time: string | null) => void) {
@@ -44,14 +47,14 @@ export default function WeeklyCalendar({selectedDate, selectedTime, selectedDoct
 
                 {/* back to monthly calendar */}
                 <button onClick={onBackToMonthView} className="inline-flex items-center gap-2 rounded-lg bg-gray-100/75 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-200">
-                    <span className="text-base leading-none">←</span>
+                    <ArrowLeft className="h-4 w-4" />
                     <span>Month view</span>
                 </button>
 
                 {/* week navigation */}
                 <div className="flex items-center gap-4">
                     <button onClick={() => handlePreviousWeek(selectedDate, onSelectDate, onSelectTime)} className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800">
-                        ←
+                        <ChevronLeft className="h-4 w-4" />
                     </button>
 
                     <h2 className="text-2xl font-semibold text-gray-900">
@@ -59,7 +62,7 @@ export default function WeeklyCalendar({selectedDate, selectedTime, selectedDoct
                     </h2>
 
                     <button onClick={() => handleNextWeek(selectedDate, onSelectDate, onSelectTime)} className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800">
-                        →
+                        <ChevronRight className="h-4 w-4" />
                     </button>
                 </div>
 
@@ -68,7 +71,7 @@ export default function WeeklyCalendar({selectedDate, selectedTime, selectedDoct
 
             {/* weekly grid (7 columns for 7 days) */}
             <div className="grid grid-cols-7 gap-3">
-                {weekDays.map((day) => (
+                {weekDays.slice(0, WEEK_DAY_LIMIT).map((day) => (
                     <WeekDayColumn
                         key={formatDateKey(day)}
                         day={day}
