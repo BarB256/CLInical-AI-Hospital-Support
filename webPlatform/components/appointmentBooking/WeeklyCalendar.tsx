@@ -1,21 +1,6 @@
 import WeekDayColumn from "./WeekDayColumn";
-import { getWeekDays } from "./dateUtils";
-import { formatDateKey } from "./dateUtils";
-import { DoctorSchedule } from "./mockTypes";
-import { BookedAppointment } from "./mockTypes";
-
-
-
-type Props = {
-    selectedDate: Date | undefined;
-    selectedTime: string | null;
-    selectedDoctor: string;
-    onSelectDate: (date: Date | undefined) => void;
-    onSelectTime: (time: string | null) => void;
-    onBackToMonthView: () => void;
-    doctorSchedules: DoctorSchedule[];
-    bookedAppointments: BookedAppointment[];
-};
+import { getWeekDays, formatDateKey } from "./dateUtils";
+import type { WeeklyCalendarProps as Props } from "@/types";
 
 // subtracts 7 from current date, moving into the previous week
 function handlePreviousWeek(selectedDate: Date | undefined, onSelectDate: (date: Date | undefined) => void, onSelectTime: (time: string | null) => void) {

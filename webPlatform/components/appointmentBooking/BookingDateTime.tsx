@@ -2,21 +2,7 @@
 
 import { Calendar } from "@/components/ui/calendar";
 import WeeklyCalendar from "./WeeklyCalendar";
-import { DoctorSchedule, BookedAppointment } from "./mockTypes";
-
-type CalendarView = "month" | "week";
-
-type Props = {
-    selectedDate: Date | undefined;
-    selectedTime: string | null;
-    selectedDoctor: string;
-    calendarView: CalendarView;
-    onSelectDate: (date: Date | undefined) => void;
-    onSelectTime: (time: string | null) => void;
-    onSelectCalendarView: (view: CalendarView) => void;
-    doctorSchedules: DoctorSchedule[];
-    bookedAppointments: BookedAppointment[];
-};
+import type { BookingDateTimeProps as Props } from "@/types";
 
 
 

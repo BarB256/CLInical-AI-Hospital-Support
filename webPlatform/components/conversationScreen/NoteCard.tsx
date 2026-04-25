@@ -1,12 +1,6 @@
 import { motion } from "motion/react";
 import { FileText } from "lucide-react";
-
-interface NoteCardProps {
-  id: string;
-  content: string;
-  timestamp: Date;
-  isNew?: boolean;
-}
+import type { NoteCardProps } from "@/types";
 
 export default function NoteCard({ content, timestamp, isNew }: NoteCardProps) {
   return (

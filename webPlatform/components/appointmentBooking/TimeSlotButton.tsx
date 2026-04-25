@@ -1,16 +1,5 @@
 import { formatDateKey } from "./dateUtils";
-
-
-type Props = {
-    day: Date;
-    time: string;
-    dateKey: string;
-    selectedDate: Date | undefined;
-    selectedTime: string | null;
-    isBooked: boolean;
-    onSelectDate: (date: Date | undefined) => void;
-    onSelectTime: (time: string | null) => void;
-}
+import type { TimeSlotButtonProps as Props } from "@/types";
 
 export default function TimeSlotButton({day, time, dateKey, selectedDate, selectedTime, isBooked, onSelectDate, onSelectTime,}: Props) {
 

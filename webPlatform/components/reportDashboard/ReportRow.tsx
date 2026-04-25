@@ -2,11 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MoreHorizontal, Download } from "lucide-react";
-import type { ReportListItem } from "./mockTypes";
-
-type Props = {
-  report: ReportListItem;
-};
+import type { ReportRowProps as Props } from "@/types";
 
 export default function ReportRow({ report }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -1,11 +1,4 @@
-import { Doctor } from "./mockTypes";
-
-type Props = {
-    doctors: Doctor[];
-    selectedDoctor: string; 
-    onSelectDoctor: (doctor: string) => void;
-    onSelectTime: (time: string | null) => void;
-}
+import type { BookingDoctorProps as Props } from "@/types";
 
 export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, onSelectTime}: Props) {
     

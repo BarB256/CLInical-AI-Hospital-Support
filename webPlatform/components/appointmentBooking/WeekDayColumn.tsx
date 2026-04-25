@@ -1,17 +1,6 @@
 import TimeSlotButton from "./TimeSlotButton";
 import { formatDateKey, formatWeekDayLabel } from "./dateUtils";
-import { DoctorSchedule, BookedAppointment } from "./mockTypes";
-
-type Props = {
-    day: Date;
-    selectedDate: Date | undefined;
-    selectedTime: string | null;
-    selectedDoctor: string;
-    onSelectDate: (date: Date | undefined) => void;
-    onSelectTime: (time: string | null) => void;
-    doctorSchedules: DoctorSchedule[];
-    bookedAppointments: BookedAppointment[];
-}
+import type { WeekDayColumnProps as Props, DoctorSchedule, BookedAppointment } from "@/types";
 
 
 // returns schedules for this day, filtered by the selected doctor

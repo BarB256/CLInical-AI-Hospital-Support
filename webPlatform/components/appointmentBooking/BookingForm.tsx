@@ -1,10 +1,5 @@
 import { useState } from "react";
-
-type Props = {
-    selectedDate: Date | undefined;
-    selectedTime: string | null;
-    selectedDoctor: string; // maybe change string to Doctor if doctor becomes an object
-}
+import type { BookingFormProps as Props } from "@/types";
 
 export default function BookingForm({selectedDate, selectedTime, selectedDoctor}: Props) {
     
