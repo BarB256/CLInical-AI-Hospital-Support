@@ -50,7 +50,7 @@ architecture-beta
         service whisper(server)[Whisper] in ear
         service trans(disk)[Transcript] in ear
         service batcher(server)[Batching module] in ear
-        service trad(cloud)[Trad LLM] in ear
+        service trad(server)[Trad LLM Gate] in ear
 
 
     group report(server)[Report Generator]
@@ -76,10 +76,10 @@ architecture-beta
 
     %% Eavesdropper flow
 
-        batcher:L -- R:trad
         whisper:R -- R:trans
         batcher:L -- R:trans
-        med:L -- R:trad %% here the question gets passed
+        batcher:L -- R:trad
+        trad:L -- R:med %% here the question gets passed
         %%  med:R -- L:val is already drawn but this would be the flow
         val:L -- L:realtime
 
@@ -152,7 +152,7 @@ flowchart TD
 - **Batching module:** Batches the conversation based on configs - by number of words or sentences.
 
 **SERVER**
-- **Trad LLM Gate:** Instead of calling the Ollama endpoint this module will do the calling and validation of the request. forms a question and forwards it to the Med Brain
+- **Trad LLM Gate:** Server-side gateway in `tradLlm` that receives batches, calls Ollama with a question-generation system prompt, and forms a question for Med LLM.
 
 ```
 flowchart TD
@@ -205,16 +205,28 @@ flowchart TD
 
 #### 2.2.1.4 Trad LLM Gate
 
-In between the Ollama endpoint and the rest of the system. Validates request from the other parts of the system.
+In between the existing batching module and Med LLM. It receives a batch string
+or reads the next batch from the batching module endpoint, calls Ollama with a
+question-generation system prompt, and returns one question string.
 
-Responsible for calling Ollama endpoint. Also holds the system prompt for the service.
+This service runs on the server for performance reasons and is implemented in
+`tradLlm`, while the existing batching module remains in `eavesdropper` and is
+not overwritten.
+
+Implemented API:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `POST /question-generation` | Accepts a batch string and returns a generated question. |
+| `POST /question-generation/from-batching` | Reads the next batch from the existing batching module and returns a generated question. |
+| `GET /question-generation/batches` | Reads recent batches sent through this gate. |
 
 ```
 flowchart TD
-    A[Request] --> B[optional - Check Auth]
-    B --> C[Check Request ]
-    C --> D[Uses Ollama for question generation]
-    D --> E[Forwards the generated question to Med Brain]
+    A[Batching Module] --> B[Send batch string]
+    B --> C[Trad LLM Gate]
+    C --> D[Generated question]
+    D --> E[Med LLM]
 ```
 
 ## 2.3 Report Generator - Generates the Report
