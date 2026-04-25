@@ -2,11 +2,14 @@ import TimeSlotButton from "./TimeSlotButton";
 import { formatDateKey, formatWeekDayLabel } from "./dateUtils";
 import type { WeekDayColumnProps as Props, DoctorSchedule, BookedAppointment } from "@/types";
 
+const SCHEDULE_LIMIT = 50;
+const BOOKED_APPOINTMENT_LIMIT = 200;
+const TIME_SLOT_LIMIT = 14;
 
 // returns schedules for this day, filtered by the selected doctor
 function getSchedulesForDay(doctorSchedules: DoctorSchedule[], dayNumber: number, selectedDoctor: string) {
     // gets all doctors who work on this weekday
-    const schedulesForDay = doctorSchedules.filter((schedule) =>
+    const schedulesForDay = doctorSchedules.slice(0, SCHEDULE_LIMIT).filter((schedule) =>
         schedule.workingDays.includes(dayNumber)
     );
 
@@ -32,11 +35,13 @@ function getTimesForDay(schedulesForDay: DoctorSchedule[]) {
 function isTimeBooked(time: string, dateKey: string, schedulesForDay: DoctorSchedule[], bookedAppointments: BookedAppointment[]) {
     // find doctors who work at this time
     const doctorsWorkingThisTime = schedulesForDay
+        .slice(0, SCHEDULE_LIMIT)
         .filter((schedule) => schedule.workHours.includes(time))
         .map((schedule) => schedule.doctorId);
 
     // find doctors who are already booked at this time
     const doctorsBookedThisTime = bookedAppointments
+        .slice(0, BOOKED_APPOINTMENT_LIMIT)
         .filter(
             (appointment) => appointment.date === dateKey && appointment.time === time
         )
@@ -74,7 +79,7 @@ export default function WeekDayColumn({day, selectedDate, selectedTime, selected
 
             <div className="space-y-2">
                 {/* render each time slot */}
-                {timesForDay.map((time) => {
+                {timesForDay.slice(0, TIME_SLOT_LIMIT).map((time) => {
                     
                     //check if the time slot is booked
                     const isBooked = isTimeBooked(time, dateKey, schedulesForDay, bookedAppointments);

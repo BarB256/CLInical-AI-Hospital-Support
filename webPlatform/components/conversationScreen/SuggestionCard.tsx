@@ -1,4 +1,3 @@
-import { motion } from "motion/react";
 import { Lightbulb, ArrowRight } from "lucide-react";
 import type { SuggestionCardProps } from "@/types";
 
@@ -11,18 +10,9 @@ export default function SuggestionCard({
 
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="relative p-4 bg-white rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow group"
-    >
+    <article className="group relative rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
       {isNew && (
-        <motion.div
-          initial={{ scale: 1 }}
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 0.6, repeat: 3 }}
-          className="absolute -top-1 -right-1 w-3 h-3 bg-[#4DB8AC] rounded-full"
-        />
+        <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-[#167980]" />
       )}
 
       <div className="flex items-start gap-3">
@@ -45,14 +35,14 @@ export default function SuggestionCard({
               {formatTime(timestamp)}
             </time>
 
-            <button className="flex items-center gap-1 text-sm text-[#4DB8AC] opacity-0 group-hover:opacity-100 transition-opacity">
+          <button className="flex items-center gap-1 text-sm text-[#167980] opacity-0 transition-opacity group-hover:opacity-100">
               <span>Review</span>
               <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </article>
   );
 }
 

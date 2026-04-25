@@ -14,7 +14,7 @@ export default function BookingLayout() {
 
     return (
     <div className="grid h-full grid-cols-[320px_minmax(0,1fr)_380px] gap-4 p-4">
-        <section className="min-w-0">
+        <section className="min-w-0 rounded-xl border border-gray-100 bg-white shadow-sm">
             <BookingDoctor
                 selectedDoctor={selectedDoctor}
                 doctors={doctors}
@@ -23,7 +23,7 @@ export default function BookingLayout() {
             />
         </section>
 
-        <section className="min-w-0 overflow-hidden">
+        <section className="min-w-0 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
             <BookingDateTime
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
@@ -37,7 +37,7 @@ export default function BookingLayout() {
             />
         </section>
 
-        <section className="min-w-0 overflow-y-auto">
+        <section className="min-w-0 overflow-y-auto rounded-xl border border-gray-100 bg-white shadow-sm">
             <BookingForm
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}

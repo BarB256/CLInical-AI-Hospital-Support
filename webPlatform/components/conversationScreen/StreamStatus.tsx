@@ -1,20 +1,12 @@
-import { motion } from "motion/react";
 import { Activity } from "lucide-react";
 import type { StreamStatusProps } from "@/types";
 
 export default function StreamStatus({ isConnected, lastUpdate }: StreamStatusProps) {
   return (
     <div className="flex items-center gap-2 px-3 py-2 bg-white border border-border rounded-lg shadow-sm">
-      <motion.div
-        animate={{
-          scale: isConnected ? [1, 1.2, 1] : 1,
-        }}
-        transition={{
-          duration: 2,
-          repeat: isConnected ? Infinity : 0,
-        }}
+      <span
         className={`w-2 h-2 rounded-full ${
-          isConnected ? "bg-[#4DB8AC]" : "bg-muted"
+          isConnected ? "bg-[#167980]" : "bg-muted"
         }`}
       />
 

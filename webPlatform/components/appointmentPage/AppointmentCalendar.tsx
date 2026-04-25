@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
 
+const APPOINTMENT_DISPLAY_LIMIT = 12;
+
 // mock appointments data - will be replaced with real data from backend later
 const mockAppointments: Record<string, { time: string; title: string; color: string }[]> = {
   "2026-03-26": [
@@ -75,7 +77,7 @@ export default function AppointmentCalendar() {
           <p className="text-gray-400 text-base">No appointments for this day.</p>
         ) : (
           <div className="flex flex-col">
-            {appointments.map((appointment, index) => (
+            {appointments.slice(0, APPOINTMENT_DISPLAY_LIMIT).map((appointment, index) => (
               <div
                 key={index}
                 className="flex items-center gap-3 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 rounded-lg px-2 transition-colors group"

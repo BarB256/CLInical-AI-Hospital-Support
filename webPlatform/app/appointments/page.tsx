@@ -6,28 +6,22 @@ import AppointmentCalendar from "@/components/appointmentPage/AppointmentCalenda
 
 export default function AppointmentsPage() {
   return (
-    <div className="flex gap-4 h-screen overflow-hidden bg-yellow-50 p-4">
+    <div className="flex h-screen gap-4 overflow-hidden bg-[#F4F7F7] p-4">
       <Sidebar />
-      <main className="flex-1 flex flex-col gap-3 pt-4 px-6 overflow-hidden">
+      <main className="flex flex-1 flex-col gap-4 overflow-hidden px-4 py-3">
 
-        {/* top row - header+welcome on left, profile on right */}
-        <div className="flex gap-4">
-
-          {/* left side - header and welcome stacked */}
-          <div className="flex flex-col gap-3 flex-1 w-[55%]">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.8fr)]">
+          <div className="flex min-w-0 flex-col gap-3">
             <Header />
             <HelloWidget />
           </div>
 
-          {/* right side - profile widget matches height */}
-          <div className="w-[45%]">
+          <div className="min-w-0">
             <DoctorProfileWidget />
           </div>
-
         </div>
 
-        {/* bottom row - appointment list and calendar */}
-        <div className="flex gap-4 flex-1 bg-white rounded-3xl p-6 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
           <AppointmentCalendar />
         </div>
 

@@ -20,26 +20,24 @@ export default function BookingDateTime({selectedDate, selectedTime, selectedDoc
     };
 
     return (
-        <div>
-            {/* Monthly calendar view */}
+        <div className="h-full">
             {calendarView === "month" && (
                 <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={handleDateSelect}
 
-                    className="p-10 w-full h-full flex [&>div]:w-full [&>div]:h-full [&_.rdp-months]:w-full [&_.rdp-months]:h-full [&_.rdp-month]:w-full [&_.rdp-month]:h-full [&_.rdp-month]:flex [&_.rdp-month]:flex-col [&_table]:w-full [&_table]:flex-1 [&_table]:flex [&_table]:flex-col [&_thead]:w-full [&_thead]:flex [&_tr]:w-full [&_tr]:flex [&_tr]:justify-between [&_tbody]:w-full [&_tbody]:flex-1 [&_tbody]:flex [&_tbody]:flex-col [&_tbody_tr]:flex-1 [&_th]:flex-1 [&_th]:flex [&_th]:justify-center [&_th]:items-center [&_th]:text-base [&_th]:font-bold [&_th]:pb-4 [&_td]:flex-1 [&_td]:p-0 [&_td]:h-16 [&_.rdp-day]:w-full [&_.rdp-day]:h-18 [&_.rdp-day]:aspect-auto [&_.rdp-day]:text-lg [&_.rdp-day]:flex [&_.rdp-day]:items-center [&_.rdp-day]:justify-center"
+                    className="flex h-full w-full p-10 [&>div]:h-full [&>div]:w-full [&_table]:w-full [&_tbody_tr]:h-16 [&_td]:p-0 [&_th]:pb-4 [&_th]:text-base [&_th]:font-semibold [&_.rdp-month]:flex [&_.rdp-month]:h-full [&_.rdp-month]:w-full [&_.rdp-month]:flex-col [&_.rdp-months]:h-full [&_.rdp-months]:w-full [&_.rdp-day]:flex [&_.rdp-day]:h-12 [&_.rdp-day]:w-full [&_.rdp-day]:items-center [&_.rdp-day]:justify-center [&_.rdp-day]:text-base"
                     modifiers={{ today: new Date() }}
                     modifiersStyles={{
                     today: {
                         fontWeight: "900",
-                        color: "#2CA6AE",
+                        color: "#167980",
                     },
                     }}
                 />
             )}
             
-            {/* Weekly calendar view */}
             {calendarView === "week" && (
                 <WeeklyCalendar 
                     selectedDate={selectedDate}

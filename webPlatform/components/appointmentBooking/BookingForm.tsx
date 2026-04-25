@@ -49,18 +49,17 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
     }
     
     const inputStyle =
-        "w-full rounded-xl border border-[#B7D7A8] bg-white px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#7FB069] focus:ring-2 focus:ring-[#DDEFD4]";
+        "w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#167980] focus:ring-2 focus:ring-[#167980]/15";
 
     const readOnlyStyle =
-        "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600";
+        "w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600";
 
     return (
-        <div className="h-full overflow-y-auto bg-white p-8 ">
+        <div className="h-full overflow-y-auto bg-white p-8">
             {!selectedDate || !selectedTime 
             // before date and time is selected, shows small div element
             ? (
-            <div className="flex flex-col mt-85 items-center justify-center text-center text-gray-400">
-                <div className="mb-4 text-4xl">📅</div>
+            <div className="flex h-full flex-col items-center justify-center text-center text-gray-400">
                 <p className="text-sm">
                     Choose a date and time to book an appointment.
                 </p>
@@ -204,7 +203,7 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                     </p>
 
                     <div className="space-y-3">
-                        <label className="flex items-center gap-3 rounded-xl border border-[#B7D7A8] px-4 py-4 cursor-pointer">
+                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 px-4 py-4">
                             <input
                                 type="radio"
                                 name="appointmentForm"
@@ -218,7 +217,7 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                             </span>
                         </label>
 
-                        <label className="flex items-center gap-3 rounded-xl border border-[#B7D7A8] px-4 py-4 cursor-pointer">
+                        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 px-4 py-4">
                             <input
                                 type="radio"
                                 name="appointmentForm"
@@ -242,7 +241,7 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                     <textarea id="medicalHistory"
                         value={medicalHistory}
                         onChange={(e) => setMedicalHistory(e.target.value)}
-                        className="min-h-[140px] w-full rounded-xl border border-[#B7D7A8] bg-white px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#7FB069] focus:ring-2 focus:ring-[#DDEFD4]"
+                        className="min-h-[140px] w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#167980] focus:ring-2 focus:ring-[#167980]/15"
                     />
                 </div>
 
@@ -263,7 +262,7 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                 {/* submit */}
                 <button
                     type="submit"
-                    className="w-full rounded-xl bg-[#7FB069] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#6AA055]"
+                    className="w-full rounded-lg bg-[#167980] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#12666c]"
                 >
                     Book Appointment
                 </button>

@@ -2,8 +2,8 @@ import BookingLayout from "@/components/appointmentBooking/BookingLayout";
 
 export default function NewAppointmentPage() {
     return (
-        <div className="min-h-screen bg-yellow-50 p-4 flex items-center justify-center">
-            <main className="w-full max-w-[95vw] h-[95vh] bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="flex min-h-screen items-center justify-center bg-[#F4F7F7] p-4">
+            <main className="h-[95vh] w-full max-w-[95vw] overflow-hidden rounded-xl bg-white">
                 <BookingLayout />
             </main>
         </div>
