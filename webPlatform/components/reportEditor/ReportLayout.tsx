@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { mockReportMeta, mockSectionList, mockSectionContent } from "./mockData";
 import SectionNav from "./SectionNav";
 import SectionEditor from "./SectionEditor";
-import type { ReportMeta, ReportSectionSummary } from "./mockTypes";
+import type { ReportMeta, ReportSectionSummary } from "@/types";
 
 export default function ReportLayout() {
   // GET /api/reports/:id

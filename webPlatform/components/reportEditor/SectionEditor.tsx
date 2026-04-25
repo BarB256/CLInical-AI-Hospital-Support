@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import { Pencil, CheckCircle, X, CheckCircle2 } from "lucide-react";
-import type { ReportSectionSummary } from "./mockTypes";
-
-type Props = {
-  section: ReportSectionSummary;
-  content: string | null; // null = still being fetched
-  onAccept: (id: string, content: string) => void;
-  onEdit: (id: string) => void;
-  isEditing: boolean;
-};
+import type { SectionEditorProps as Props } from "@/types";
 
 // Renders plain-text content styled to match the generated PDF output.
 // Parses line-by-line: indented bullets, top-level bullets, headings (ends with ':'), numbered items, plain text.

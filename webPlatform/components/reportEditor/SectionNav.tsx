@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle, User, Calendar, Stethoscope, Search } from "lucide-react";
-import type { ReportMeta, ReportSectionSummary } from "./mockTypes";
-
-type Props = {
-  meta: ReportMeta;
-  sections: ReportSectionSummary[];
-  activeSectionId: string;
-  onSelectSection: (id: string) => void;
-};
+import type { SectionNavProps as Props } from "@/types";
 
 export default function SectionNav({ meta, sections, activeSectionId, onSelectSection }: Props) {
   const [query, setQuery] = useState("");

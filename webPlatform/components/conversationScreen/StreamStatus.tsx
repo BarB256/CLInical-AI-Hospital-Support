@@ -1,10 +1,6 @@
 import { motion } from "motion/react";
 import { Activity } from "lucide-react";
-
-interface StreamStatusProps {
-  isConnected: boolean;
-  lastUpdate?: Date;
-}
+import type { StreamStatusProps } from "@/types";
 
 export default function StreamStatus({ isConnected, lastUpdate }: StreamStatusProps) {
   return (

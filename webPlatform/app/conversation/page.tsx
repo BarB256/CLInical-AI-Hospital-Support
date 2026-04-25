@@ -5,23 +5,7 @@ import  NoteCard  from "../../components/conversationScreen/NoteCard";
 import SuggestionCard  from "../../components/conversationScreen/SuggestionCard";
 import  StreamStatus  from "../../components/conversationScreen/StreamStatus";
 import Sidebar from "../../components/appointmentPage/Sidebar"
-// Mock data structure matching future API shape
-interface Note {
-  id: string;
-  content: string;
-  source: string;
-  timestamp: Date;
-  isNew?: boolean;
-}
-
-interface Suggestion {
-  id: string;
-  title: string;
-  description: string;
-  priority: "high" | "medium" | "low";
-  timestamp: Date;
-  isNew?: boolean;
-}
+import type { Note, Suggestion } from "@/types";
 
 // Mock initial data
 const initialNotes: Note[] = [

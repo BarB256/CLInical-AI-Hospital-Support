@@ -1,13 +1,6 @@
 import { motion } from "motion/react";
 import { Lightbulb, ArrowRight } from "lucide-react";
-
-interface SuggestionCardProps {
-  id: string;
-  title: string;
-  description: string;
-  timestamp: Date;
-  isNew?: boolean;
-}
+import type { SuggestionCardProps } from "@/types";
 
 export default function SuggestionCard({
   title,
