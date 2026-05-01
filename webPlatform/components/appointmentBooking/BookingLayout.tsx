@@ -1,9 +1,9 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BookingDoctor from "./BookingDoctor";
 import BookingDateTime from "./BookingDateTime";
 import BookingForm from "./BookingForm";
-import { doctors, doctorSchedules, bookedAppointments } from "./mockData";
+import type { Doctor, DoctorSchedule, BookedAppointment } from "@/types";  
 
 export default function BookingLayout() {
 
@@ -11,6 +11,43 @@ export default function BookingLayout() {
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedDoctor, setSelectedDoctor] = useState<string>("all");
     const [calendarView, setCalendarView] = useState<"month" | "week">("month");
+
+
+    const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const [doctorSchedules, setDoctorSchedules] = useState<DoctorSchedule[]>([]);  
+    const [bookedAppointments, setBookedAppointments] = useState<BookedAppointment[]>([]);  
+
+
+    // fetch doctors, schedules, and booked appointments
+    useEffect(() => {
+        async function loadData() {
+            try {
+                // fetch all doctors
+                const doctorsResponse = await fetch("/api/doctors");
+                const doctorsData: Doctor[] = await doctorsResponse.json();
+                setDoctors(doctorsData);
+
+                // fetch each doctors schedule
+                const schedulePromisses = doctorsData.map((doctor) =>
+                     fetch(`/api/doctors/${doctor.id}/schedule`).then((response) => response.json())
+                );
+                const scheduleArrays = await Promise.all(schedulePromisses);
+                setDoctorSchedules(scheduleArrays.flat());
+
+                // fetch all booked appointments
+                const appointmentsResponse = await fetch("/api/appointments");
+                const appointmentsData: BookedAppointment[] = await appointmentsResponse.json();
+                setBookedAppointments(appointmentsData);
+            } catch (error) {
+                console.error("Failed to load booking data:", error);  
+            }
+        }
+        loadData();  
+    }, []);     // the empty [] means it only runs once after the first page render
+
+
+
+
 
     return (
     <div className="grid h-full grid-cols-[320px_minmax(0,1fr)_380px] gap-4 p-4">

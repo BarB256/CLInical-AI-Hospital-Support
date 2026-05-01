@@ -12,8 +12,11 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
     const [consent, setConsent] = useState(false);
     const [medicalHistory, setMedicalHistory] = useState("");
 
+    const [submitError, setSubmitError] = useState<string | null>(null);  
+    const [submitSuccess, setSubmitSuccess] = useState(false);  
+
     // validation and submission for form
-    function handleSubmit() {
+    async function handleSubmit() {
         if (
             !firstName ||
             !lastName ||
@@ -27,25 +30,41 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
             !selectedDoctor
 
         ) {
-            console.log("Missing required fields");
+            setSubmitError("Missing required fields");
             return;
         }
 
-        const appointment = {
-            firstName,
-            lastName,
-            dateOfBirth,
-            emailAddress,
-            contactNumber,
-            appointmentType,
-            consent,
-            medicalHistory, // optional
-            selectedDate,
-            selectedTime,
-            selectedDoctor
-        };
+        setSubmitError(null);  
+        setSubmitSuccess(false); 
 
-        console.log("Appointment:", appointment);
+         try {  
+            // format date as YYYY-MM-DD for the database  
+            const year = selectedDate.getFullYear();  
+            const month = String(selectedDate.getMonth() + 1).padStart(2, "0");  
+            const day = String(selectedDate.getDate()).padStart(2, "0");  
+            const dateString = `${year}-${month}-${day}`;  
+  
+            const response = await fetch("/api/appointments", {  
+                method: "POST",  
+                headers: { "Content-Type": "application/json" },  
+                body: JSON.stringify({  
+                    doctorId: selectedDoctor,  
+                    patientId: "8e90ae80-87d5-4a45-897b-2bc4a45430a6", // replace with logged in users id once session management is implemented 
+                    date: dateString,  
+                    time: selectedTime,  
+                }),  
+            });  
+  
+            if (response.ok) {  
+                setSubmitSuccess(true);  
+                return;  
+            }  
+  
+            const result = await response.json();  
+            setSubmitError(result.error || "Failed to book appointment");  
+        } catch {  
+            setSubmitError("Network error");  
+        }  
     }
     
     const inputStyle =
@@ -258,6 +277,19 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                         I agree to the processing of my appointment details.
                     </p>
                 </div>
+                
+                {/* error/success feedback upon form submission */}
+                {submitError && (  
+                    <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">  
+                        {submitError}  
+                    </p>  
+                )}  
+                {submitSuccess && (  
+                    <p className="rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">  
+                        Appointment booked successfully!  
+                    </p>  
+                )}
+
 
                 {/* submit */}
                 <button

@@ -26,9 +26,9 @@ export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, 
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-gray-900">
-                            Saint Harmony&apos;s Clinic
+                            CLInical
                         </p>
-                        <p className="text-sm text-gray-500">Organizer</p>
+                        <p className="text-sm text-gray-500">Clinic</p>
                     </div>
                 </div>
 

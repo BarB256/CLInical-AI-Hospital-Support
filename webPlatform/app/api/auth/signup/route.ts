@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";  
 import pool from "@/lib/db"; 
 
+// adds new user into accounts table (and into doctors table if new user is of type doctor)
 export async function POST(request: NextRequest) {
     // parse JSON body from requests
     const body = await request.json();  
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ id: accountId }, { status: 201 });
 
     } catch (error: unknown) {
-        // handle duplicate email. POSTGRES throws error code 23505 for unique constraint violations
+        // handle duplicate email. postgres throws error code 23505 for unique constraint violations
         // accounts table has: email VARCHAR(255) NOT NULL UNIQUE  
         if (
             typeof error === "object" &&

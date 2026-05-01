@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";  
 import pool from "@/lib/db";  
 
+// checks login credentials and then logs in accordingly  
 export async function POST(request: NextRequest) {
     // parse JSON body
     const body = await request.json();  
