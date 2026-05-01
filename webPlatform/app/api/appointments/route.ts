@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { cookies } from "next/headers";
 
 
 // returns booked appointments (for the calender/booking UI)
@@ -38,9 +39,18 @@ export async function GET(request: NextRequest) {
 
 // book a new appointment
 export async function POST(request: NextRequest) {
+    // get logged in user's id
+    const cookieStore = await cookies();
+    const patientId = cookieStore.get("userId")?.value;
+
+    if (!patientId) {
+        return  NextResponse.json({ error: "Not logged in" }, { status: 401 });  
+    }
+    
     // validate body
     const body = await request.json();
-    const { doctorId, patientId, date, time } = body;
+    let { doctorId } = body;    // may be reassigned if chosen doctor is "All doctors"
+    const { date, time } = body;
 
     if (!doctorId || !patientId || !date || !time) {
         return NextResponse.json(  
@@ -50,6 +60,39 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+        // if 'All doctors' is chosen, find an available doctor
+        if (doctorId === "all") {
+            const available = await pool.query(
+                `SELECT d.id
+                 FROM doctors d
+                 JOIN doctor_schedules ds ON ds.doctor_id = d.id
+                 WHERE
+                    -- doctor works on this day of the week  
+                   EXTRACT(DOW FROM $1::date) = ANY(ds.working_days)  
+
+                   -- doctor works at this time  
+                   AND $2 = ANY(ds.work_hours)  
+
+                   -- doctor doesn't already have a booking at this date+time  
+                   AND NOT EXISTS (  
+                    SELECT 1 FROM booked_appointments ba  
+                    WHERE ba.doctor_id = d.id AND ba.date = $1::date AND ba.time = $2
+                   )
+                LIMIT 1`,
+                [date, time]
+            );
+
+            if (available.rows.length === 0) {
+                 return NextResponse.json(  
+                    { error: "No doctors available at this date and time" },  
+                    { status: 409 }  
+                ); 
+            }
+
+            doctorId = available.rows[0].id;  
+        }
+        
+        
         const result = await pool.query(  
             `INSERT INTO booked_appointments (doctor_id, patient_id, date, time)  
             VALUES ($1, $2, $3, $4)  

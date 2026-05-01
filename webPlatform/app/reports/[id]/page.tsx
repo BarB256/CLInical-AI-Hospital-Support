@@ -1,7 +1,10 @@
 import Sidebar from "@/components/appointmentPage/Sidebar";
 import ReportLayout from "@/components/reportEditor/ReportLayout";
 
-export default function ReportPage() {
+export default async function ReportEditorPage({ params }: { params: Promise<{ id: string }>}) {
+    const { id } = await params;
+
+
   return (
     <div className="flex gap-4 h-screen overflow-hidden bg-[#F4F7F7] p-4">
       <Sidebar />
@@ -17,7 +20,7 @@ export default function ReportPage() {
 
         {/* main layout */}
         <div className="flex-1 min-h-0">
-          <ReportLayout />
+          <ReportLayout reportId={id}/>
         </div>
 
       </div>

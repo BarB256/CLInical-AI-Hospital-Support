@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { BookingFormProps as Props } from "@/types";
 
-export default function BookingForm({selectedDate, selectedTime, selectedDoctor}: Props) {
+export default function BookingForm({selectedDate, selectedTime, selectedDoctor, doctors}: Props) {
     
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -14,6 +14,8 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
 
     const [submitError, setSubmitError] = useState<string | null>(null);  
     const [submitSuccess, setSubmitSuccess] = useState(false);  
+
+    const selectedDoctorName = doctors.find(d => d.id === selectedDoctor)?.name ?? selectedDoctor;
 
     // validation and submission for form
     async function handleSubmit() {
@@ -49,7 +51,6 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                 headers: { "Content-Type": "application/json" },  
                 body: JSON.stringify({  
                     doctorId: selectedDoctor,  
-                    patientId: "8e90ae80-87d5-4a45-897b-2bc4a45430a6", // replace with logged in users id once session management is implemented 
                     date: dateString,  
                     time: selectedTime,  
                 }),  
@@ -180,7 +181,7 @@ export default function BookingForm({selectedDate, selectedTime, selectedDoctor}
                         </label>
                         <input
                             type="text"
-                            value={selectedDoctor === "all" ?  "Any" : selectedDoctor}
+                            value={selectedDoctor === "all" ?  "Any" : selectedDoctorName}
                             readOnly
                             className={readOnlyStyle}
                         />

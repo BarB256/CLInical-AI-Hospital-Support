@@ -79,6 +79,7 @@ export default function BookingLayout() {
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 selectedDoctor={selectedDoctor}
+                doctors={doctors}
             />
         </section>
     </div>
