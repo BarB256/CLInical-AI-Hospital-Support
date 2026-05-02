@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";  
 import pool from "@/lib/db";  
   
-// get all suggestions ordered by newest first  
-export async function GET() {  
+// fetch suggestions for a specific appointment  
+export async function GET(request: NextRequest) {  
+  const appointmentId = new URL(request.url).searchParams.get("appointmentId");  
+  
+  if (!appointmentId) {  
+    return NextResponse.json(  
+      { error: "appointmentId query parameter is required" },  
+      { status: 400 }  
+    );  
+  }  
+  
   try {  
     const result = await pool.query(  
-      `SELECT id, title, description, priority, timestamp, is_new AS "isNew"  
+      `SELECT id, title, description, priority, timestamp  
        FROM suggestions  
-       ORDER BY timestamp DESC  
-       LIMIT 50`  
+       WHERE appointment_id = $1  
+       ORDER BY timestamp::TIME DESC`,  
+      [appointmentId]  
     );  
     return NextResponse.json(result.rows);  
   } catch (error) {  
@@ -17,26 +27,23 @@ export async function GET() {
   }  
 }  
   
-// add a new suggestion  
+// create a new suggestion for an appointment  
 export async function POST(request: NextRequest) {  
   try {  
-    const { title, description, priority } = await request.json();  
+    const { title, description, priority, appointmentId } = await request.json();  
   
-    if (!title || !description || !priority) {  
-      return NextResponse.json({ error: "title, description, and priority are required" }, { status: 400 });  
-    }  
-  
-    
-    const validPriorities = ["high", "medium", "low"];  
-    if (!validPriorities.includes(priority)) {  
-      return NextResponse.json({ error: "priority must be 'high', 'medium', or 'low'" }, { status: 400 });  
+    if (!title || !description || !priority || !appointmentId) {  
+      return NextResponse.json(  
+        { error: "title, description, priority, and appointmentId are required" },  
+        { status: 400 }  
+      );  
     }  
   
     const result = await pool.query(  
-      `INSERT INTO suggestions (title, description, priority)  
-       VALUES ($1, $2, $3)  
-       RETURNING id, title, description, priority, timestamp, is_new AS "isNew"`,  
-      [title, description, priority]  
+      `INSERT INTO suggestions (title, description, priority, appointment_id)  
+       VALUES ($1, $2, $3, $4)  
+       RETURNING id, title, description, priority, timestamp`,  
+      [title, description, priority, appointmentId]  
     );  
   
     return NextResponse.json(result.rows[0], { status: 201 });  

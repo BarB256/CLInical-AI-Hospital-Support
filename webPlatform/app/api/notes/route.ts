@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";  
 import pool from "@/lib/db";  
   
-// get all notes ordered by newest first  
-export async function GET() {  
+// fetch notes for a specific appointment  
+export async function GET(request: NextRequest) {  
+  const appointmentId = new URL(request.url).searchParams.get("appointmentId");  
+  
+  if (!appointmentId) {  
+    return NextResponse.json(  
+      { error: "appointmentId query parameter is required" },  
+      { status: 400 }  
+    );  
+  }  
+  
   try {  
     const result = await pool.query(  
-      `SELECT id, content, source, timestamp, is_new AS "isNew"  
+      `SELECT id, content, source, timestamp  
        FROM notes  
-       ORDER BY timestamp DESC  
-       LIMIT 50`  
+       WHERE appointment_id = $1  
+       ORDER BY timestamp::TIME DESC`,  
+      [appointmentId]  
     );  
     return NextResponse.json(result.rows);  
   } catch (error) {  
@@ -17,20 +27,23 @@ export async function GET() {
   }  
 }  
   
-// add a new note  
+// create a new note for an appointment  
 export async function POST(request: NextRequest) {  
   try {  
-    const { content, source } = await request.json();  
+    const { content, source, appointmentId } = await request.json();  
   
-    if (!content) {  
-      return NextResponse.json({ error: "content is missing" }, { status: 400 });  
+    if (!content || !appointmentId) {  
+      return NextResponse.json(  
+        { error: "content and appointmentId are required" },  
+        { status: 400 }  
+      );  
     }  
   
     const result = await pool.query(  
-      `INSERT INTO notes (content, source)  
-       VALUES ($1, $2)  
-       RETURNING id, content, source, timestamp, is_new AS "isNew"`,  
-      [content, source || null]  
+      `INSERT INTO notes (content, source, appointment_id)  
+       VALUES ($1, $2, $3)  
+       RETURNING id, content, source, timestamp`,  
+      [content, source || null, appointmentId]  
     );  
   
     return NextResponse.json(result.rows[0], { status: 201 });  

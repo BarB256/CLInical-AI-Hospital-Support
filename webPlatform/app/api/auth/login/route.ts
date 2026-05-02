@@ -47,13 +47,19 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // add cookie to store user id
+        // add cookie to store user id and user name
         const cookieStore = await cookies();
         cookieStore.set("userId", account.id, {
             httpOnly: true,         // JS can't read/modify it
             secure: false,          // required https for true
             path: "/",              // available to all routes
             maxAge: 60 * 60 * 24    // expires in 24 hours
+        });
+        cookieStore.set("userName", account.name, {
+            httpOnly: false,         
+            secure: false,          
+            path: "/",              
+            maxAge: 60 * 60 * 24   
         });
 
         // login successful, return account
