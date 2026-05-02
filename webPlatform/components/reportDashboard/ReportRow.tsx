@@ -2,8 +2,12 @@
 
 import { MoreHorizontal, Download } from "lucide-react";
 import type { ReportRowProps as Props } from "@/types";
+import { useRouter } from "next/navigation"; 
+import { Pencil } from "lucide-react"
 
 export default function ReportRow({ report }: Props) {
+  const router = useRouter();
+  
   function handleDownloadPdf(event: React.MouseEvent<HTMLButtonElement>) {
     const blob = new Blob([""], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
@@ -16,6 +20,11 @@ export default function ReportRow({ report }: Props) {
     URL.revokeObjectURL(url);
     event.currentTarget.closest("details")?.removeAttribute("open");
   }
+
+  function handleOpenEditor(event: React.MouseEvent<HTMLButtonElement>) {  
+    event.currentTarget.closest("details")?.removeAttribute("open");  
+    router.push(`/reports/${report.id}`);  
+  } 
 
   return (
     <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -36,6 +45,15 @@ export default function ReportRow({ report }: Props) {
               <Download className="h-4 w-4" />
               Download PDF
             </button>
+
+            <button  
+              onClick={handleOpenEditor}  
+              className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-gray-700 transition hover:bg-gray-50"  
+            >  
+              <Pencil className="h-4 w-4" />  
+              Edit Report  
+            </button> 
+
           </div>
         </details>
       </td>

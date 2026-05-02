@@ -1,7 +1,10 @@
 import Image from "next/image";
+import { cookies } from "next/headers";
 
-export default function HelloWidget() {
-  const doctorName = "Dr. Santos";
+export default async function HelloWidget() {
+
+  const cookieStore = await cookies();
+  const doctorName = cookieStore.get("userName")?.value ?? "Doctor";
 
   return (
     <div className="relative min-h-36 overflow-hidden rounded-xl bg-[#167980] p-6">

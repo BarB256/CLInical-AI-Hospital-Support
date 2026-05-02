@@ -5,6 +5,8 @@ const DOCTOR_OPTION_LIMIT = 25;
 
 export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, onSelectTime}: Props) {
     
+    const selectedDoctorName = doctors.find(d => d.id === selectedDoctor)?.name ?? selectedDoctor;
+
     // resets selected time when doctor changes to avoid invalid selections 
     function handleDoctorSelect(doctor: string) {
         onSelectDoctor(doctor);
@@ -16,7 +18,7 @@ export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, 
             <div className="space-y-7 p-8">
                 <div className="space-y-2">
                     <h2 className="text-2xl font-semibold leading-tight text-gray-950">
-                        Book an appointment with {selectedDoctor === "all" ? "one of our experienced doctors" : selectedDoctor}.
+                        Book an appointment with {selectedDoctor === "all" ? "one of our experienced doctors" : selectedDoctorName}.
                     </h2>
                 </div>
 
@@ -26,9 +28,9 @@ export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, 
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-gray-900">
-                            Saint Harmony&apos;s Clinic
+                            CLInical
                         </p>
-                        <p className="text-sm text-gray-500">Organizer</p>
+                        <p className="text-sm text-gray-500">Clinic</p>
                     </div>
                 </div>
 
@@ -60,7 +62,7 @@ export default function BookingDoctor({selectedDoctor, doctors, onSelectDoctor, 
                     </select>
                 </div>
                 <p className="max-w-[240px] text-sm leading-6 text-gray-500">
-                    Schedule an appointment with {selectedDoctor === "all" ? "one of our experienced doctors" : selectedDoctor + ", our dedicated doctor,"} to address your
+                    Schedule an appointment with {selectedDoctor === "all" ? "one of our experienced doctors" : selectedDoctorName + ", our dedicated doctor,"} to address your
                     healthcare needs. Book your appointment today for expert medical care and personalized attention.
                 </p>
             </div>
