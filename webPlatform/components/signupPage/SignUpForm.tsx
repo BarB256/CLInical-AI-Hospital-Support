@@ -4,9 +4,7 @@ import { useState } from "react";
 import { User, Mail, Lock } from "lucide-react";
 import type { AccountType, SignUpFormData, SignUpFormProps } from "@/types";
 
-export default function SignUpForm({ onSubmit }: SignUpFormProps) {
-  const [accountType, setAccountType] = useState<AccountType>("patient");
-
+export default function SignUpForm({ onSubmit, accountType = "patient", setAccountType }: SignUpFormProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -35,7 +33,7 @@ export default function SignUpForm({ onSubmit }: SignUpFormProps) {
 
             <button
               type="button"
-              onClick={() => setAccountType("patient")}
+              onClick={() => setAccountType?.("patient")}
               className={`rounded-lg px-4 py-3 text-sm font-semibold transition
                 ${accountType === "patient"
                   ? "bg-[#167980] text-white"
@@ -47,7 +45,7 @@ export default function SignUpForm({ onSubmit }: SignUpFormProps) {
 
             <button
               type="button"
-              onClick={() => setAccountType("doctor")}
+              onClick={() => setAccountType?.("doctor")}
               className={`rounded-lg px-4 py-3 text-sm font-semibold transition
                 ${accountType === "doctor"
                   ? "bg-[#167980] text-white"
