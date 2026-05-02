@@ -1,7 +1,36 @@
 import { Pencil, MapPin } from "lucide-react";
 import Image from "next/image";
+import { cookies } from "next/headers";
+import pool from "@/lib/db";
 
-export default function DoctorProfileWidget() {
+export default async function DoctorProfileWidget() {
+  const cookieStore = await cookies();
+  const doctorName = cookieStore.get("userName")?.value ?? "Doctor";
+  const userId = cookieStore.get("userId")?.value;  
+
+  // get doctors working hours
+  let workingHoursLabel = "N/A";  
+  
+  if (userId) {  
+    const result = await pool.query(  
+      `SELECT ds.work_hours  
+       FROM doctors d  
+       JOIN doctor_schedules ds ON ds.doctor_id = d.id  
+       WHERE d.account_id = $1  
+       LIMIT 1`,  
+      [userId]  
+    );  
+  
+    if (result.rows.length > 0) {  
+      const hours: string[] = result.rows[0].work_hours;  
+      if (hours.length > 0) {  
+        const first = hours[0];                // e.g. "9:00 am"  
+        const last = hours[hours.length - 1];  // e.g. "5:00 pm"  
+        workingHoursLabel = `${first} - ${last}`;  
+      }  
+    }  
+  }  
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
 
@@ -22,7 +51,7 @@ export default function DoctorProfileWidget() {
         />
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-semibold text-gray-950">Dr. Julian Santos</h3>
+          <h3 className="font-semibold text-gray-950">{doctorName}</h3>
           <span className="text-xs font-bold tracking-widest text-[#167980]">PEDIATRICIAN</span>
           <div className="mt-2 flex items-center gap-1 text-sm text-gray-500">
             <MapPin className="h-4 w-4 shrink-0" />
@@ -32,7 +61,7 @@ export default function DoctorProfileWidget() {
 
         <div className="rounded-lg bg-[#F4F7F7] px-4 py-3 text-center">
           <span className="block text-xs text-gray-500">Working hours</span>
-          <span className="text-sm font-semibold text-gray-900">10am - 5pm</span>
+          <span className="text-sm font-semibold text-gray-900">{workingHoursLabel}</span>
         </div>
 
       </div>

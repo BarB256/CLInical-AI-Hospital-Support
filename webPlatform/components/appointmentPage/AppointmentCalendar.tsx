@@ -1,37 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 
 const APPOINTMENT_DISPLAY_LIMIT = 12;
 
-// mock appointments data - will be replaced with real data from backend later
-const mockAppointments: Record<string, { time: string; title: string; color: string }[]> = {
-  "2026-03-26": [
-    { time: "10:30 am", title: "Meeting with chief pediatrician Dr. Whitaker", color: "bg-green-400" },
-    { time: "11:00 am", title: "Consultation with Mrs. Javadi", color: "bg-[#2CA6AE]" },
-    { time: "11:30 am", title: "Consultation with Mr. Stancild", color: "bg-[#2CA6AE]" },
-    { time: "12:00 pm", title: "Telemedicine call with Mrs. Bond", color: "bg-yellow-400" },
-    { time: "12:30 pm", title: "Follow-up with Mr. Lamar", color: "bg-pink-400" },
-    { time: "01:00 pm", title: "Lunch meeting with Dr. Smith", color: "bg-gray-400" },
-    { time: "02:00 pm", title: "Review patient files", color: "bg-[#2CA6AE]" },
-    { time: "03:00 pm", title: "Consultation with Mr. Johnson", color: "bg-green-400" },
-    { time: "03:30 pm", title: "Telemedicine call with Ms. Adams", color: "bg-yellow-400" },
-    { time: "04:30 pm", title: "Department brief", color: "bg-pink-400" },
-    { time: "05:00 pm", title: "End of shift review", color: "bg-gray-400" },
-  ],
-  "2026-03-28": [
-    { time: "09:00 am", title: "Consultation with Mr. Peterson", color: "bg-[#2CA6AE]" },
-    { time: "10:00 am", title: "Follow-up with Mrs. Chen", color: "bg-green-400" },
-  ],
-  "2026-03-30": [
-    { time: "11:00 am", title: "Telemedicine call with Mr. Davis", color: "bg-yellow-400" },
-  ],
-};
+// color palette to cycle through for appointment entries  
+const COLORS = ["bg-[#2CA6AE]", "bg-green-400", "bg-yellow-400", "bg-pink-400", "bg-gray-400"];
+
+type CalendarAppointment = { time: string; title: string; color: string }; 
 
 // format date to match our mock data keys
 function formatDate(date: Date): string {
-  return date.toISOString().split("T")[0];
+  const year = date.getFullYear();  
+  const month = String(date.getMonth() + 1).padStart(2, "0");  
+  const day = String(date.getDate()).padStart(2, "0");  
+  return `${year}-${month}-${day}`;  
 }
 
 export default function AppointmentCalendar() {
@@ -42,6 +26,37 @@ export default function AppointmentCalendar() {
     return d;
   }, []);
   const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  const [appointments, setAppointments] = useState<Record<string, CalendarAppointment[]>>({});  
+
+  // loads booked appointments from database
+  useEffect(() => {  
+    async function loadAppointments() {  
+      try {  
+        // FOR LATER: pass the logged-in doctor's ID as ?doctorId=... once session management is implemented later  
+        const response = await fetch("/api/appointments/calendar");  
+        const rows: { date: string; time: string; patientName: string }[] = await response.json();  
+  
+        // group by date and build the display format  
+        const grouped: Record<string, CalendarAppointment[]> = {};  
+        rows.forEach((row, index) => {  
+          if (!grouped[row.date]) {
+            grouped[row.date] = []; 
+          }
+
+          grouped[row.date].push({  
+            time: row.time,  
+            title: `Appointment with ${row.patientName}`,  
+            color: COLORS[index % COLORS.length],  
+          });  
+        });  
+        setAppointments(grouped);  
+      } catch (error) {  
+        console.error("Failed to load appointments:", error);  
+      }  
+    }  
+    loadAppointments();  
+  }, []);  // the empty [] means it only runs once after the first page render
 
   const calendarModifiers = useMemo(() => ({ today }), [today]);
   const calendarModifiersStyles = useMemo(
@@ -56,7 +71,7 @@ export default function AppointmentCalendar() {
 
   // get appointments for the selected day
   const selectedKey = formatDate(selectedDate);
-  const appointments = mockAppointments[selectedKey] || [];
+  const dayAppointments = appointments[selectedKey] || [];
 
   // format the selected date for the list header
   const dateLabel = selectedDate.toLocaleDateString("en-GB", {
@@ -73,11 +88,11 @@ export default function AppointmentCalendar() {
           {dateLabel}
         </h3>
 
-        {appointments.length === 0 ? (
+        {dayAppointments.length === 0 ? (
           <p className="text-gray-400 text-base">No appointments for this day.</p>
         ) : (
           <div className="flex flex-col">
-            {appointments.slice(0, APPOINTMENT_DISPLAY_LIMIT).map((appointment, index) => (
+            {dayAppointments.slice(0, APPOINTMENT_DISPLAY_LIMIT).map((appointment, index) => (
               <div
                 key={index}
                 className="flex items-center gap-3 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 rounded-lg px-2 transition-colors group"

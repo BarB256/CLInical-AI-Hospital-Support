@@ -1,18 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import { mockReports } from "./mockData";
 import ReportRow from "./ReportRow";
+import { ReportListItem } from "@/types";
 
 const REPORT_DISPLAY_LIMIT = 100;
 
 export default function ReportDashboard() {
+  const [reports, setReports] = useState<ReportListItem[]>([]); 
   const [query, setQuery] = useState("");
   const normalizedQuery = query.trim().toLowerCase();
 
+  // fetch reports from database
+  useEffect(() => {
+    async function loadReports() {
+      try {
+        const response = await fetch("/api/reports");
+        const data: ReportListItem[] = await response.json();
+        setReports(data);
+      } catch (error) {  
+        console.error("Failed to load reports:", error);  
+      }  
+    }
+    loadReports();
+  }, []); // the empty [] means it only runs once after the first page render
+
   const filtered = normalizedQuery
-    ? mockReports.filter(
+    ? reports.filter(
         (r) =>
           r.title.toLowerCase().includes(normalizedQuery) ||
           r.content.toLowerCase().includes(normalizedQuery) ||
@@ -20,7 +35,7 @@ export default function ReportDashboard() {
           r.patientSurname.toLowerCase().includes(normalizedQuery) ||
           r.date.toLowerCase().includes(normalizedQuery)
       )
-    : mockReports;
+    : reports;
   const visibleReports = filtered.slice(0, REPORT_DISPLAY_LIMIT);
 
   return (
