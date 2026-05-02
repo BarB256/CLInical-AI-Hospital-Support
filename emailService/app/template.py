@@ -8,8 +8,8 @@ def build_email(report: dict, sections: list[dict]) -> tuple[str, str, str]:
 
 def _build_html(report: dict, sections: list[dict]) -> str:
     sections_html = "".join(
-        f"<h2>{s['title']}</h2><p>{s['content'] or 'N/A'}</p>"
-        for s in sections
+        f"<h2>{section['title']}</h2><p>{section['content'] or 'N/A'}</p>"
+        for section in sections
     )
     stamp = (
         f"Best Regards,<br><strong>Dr. {report['doctor_name']}</strong>"
@@ -33,7 +33,7 @@ def _build_text(report: dict, sections: list[dict]) -> str:
         f"Doctor: Dr. {report['doctor_name']}",
         "",
     ]
-    for s in sections:
-        lines += [s["title"], s["content"] or "N/A", ""]
+    for section in sections:
+        lines += [section["title"], section["content"] or "N/A", ""]
     lines += ["Best Regards,", f"Dr. {report['doctor_name']}", "CLInical Hospital Support"]
     return "\n".join(lines)

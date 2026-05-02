@@ -10,7 +10,7 @@ def send_email(to: str, subject: str, html: str, text: str) -> None:
     user = os.getenv("SMTP_USER", "")
     password = os.getenv("SMTP_PASSWORD", "")
     from_addr = os.getenv("SMTP_FROM", "noreply@clinical.local")
-    use_tls = os.getenv("SMTP_USE_TLS", "false").lower() == "true"
+    is_tls_enabled = os.getenv("SMTP_USE_TLS", "false").lower() == "true"
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -19,8 +19,10 @@ def send_email(to: str, subject: str, html: str, text: str) -> None:
     msg.attach(MIMEText(text, "plain"))
     msg.attach(MIMEText(html, "html"))
 
+    # TODO: once reportGenerator is merged, attach pdf_bytes here
+
     with smtplib.SMTP(host, port) as smtp:
-        if use_tls:
+        if is_tls_enabled:
             smtp.starttls()
         if user and password:
             smtp.login(user, password)

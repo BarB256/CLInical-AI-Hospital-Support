@@ -7,7 +7,7 @@ API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 def get_valid_keys() -> set[str]:
     raw = os.getenv("API_KEYS", "")
-    return {k.strip() for k in raw.split(",") if k.strip()}
+    return {key.strip() for key in raw.split(",") if key.strip()}
 
 
 async def verify_api_key(api_key: str = Security(API_KEY_HEADER)) -> str:
